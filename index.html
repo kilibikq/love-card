@@ -20,7 +20,7 @@ body {
     position: relative;
 }
 
-/* ⭐ фоновые звёзды */
+/* звёзды */
 body::before {
     content: "";
     position: absolute;
@@ -57,7 +57,7 @@ body::before {
     100% { transform: scale(1); }
 }
 
-/* текст (ВАЖНО: адаптивный) */
+/* текст */
 .message {
     font-size: clamp(22px, 5vw, 38px);
     margin-top: 20px;
@@ -83,12 +83,23 @@ body::before {
     transition: all 1s ease;
 }
 
+/* финал */
+.final {
+    margin-top: 20px;
+    font-size: clamp(16px, 4vw, 24px);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 1.5s ease;
+    color: #fff;
+    text-shadow: 0 0 10px rgba(255,255,255,0.6);
+}
+
 .show {
     opacity: 1;
     transform: translateY(0);
 }
 
-/* 🌌 частицы */
+/* частицы */
 .particle {
     position: fixed;
     width: 4px;
@@ -100,7 +111,6 @@ body::before {
     pointer-events: none;
     animation: floatUp linear forwards;
     box-shadow: 0 0 6px rgba(255,255,255,0.8);
-    z-index: 0;
 }
 
 @keyframes floatUp {
@@ -119,6 +129,7 @@ body::before {
     <div class="message" id="text"></div>
     <div class="subtext" id="sub">ты — самое лучшее, что случилось со мной ❤️</div>
     <div class="cake" id="cake">🎂</div>
+    <div class="final" id="final">я люблю тебя ❤️</div>
 </div>
 
 <script>
@@ -126,7 +137,7 @@ const text = "С днем рождения, любимая ❤️";
 
 let started = false;
 
-/* текст */
+/* печать текста */
 function typeText(el, txt, i = 0) {
     if (i === 0) el.textContent = "";
 
@@ -135,7 +146,16 @@ function typeText(el, txt, i = 0) {
         setTimeout(() => typeText(el, txt, i + 1), 60);
     } else {
         document.getElementById("sub").style.opacity = 1;
-        document.getElementById("cake").classList.add("show");
+
+        setTimeout(() => {
+            document.getElementById("cake").classList.add("show");
+
+            /* 💌 финальное сообщение */
+            setTimeout(() => {
+                document.getElementById("final").classList.add("show");
+            }, 1200);
+
+        }, 800);
     }
 }
 
