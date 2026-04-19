@@ -28,23 +28,9 @@ body::before {
     opacity: 0.06;
 }
 
-/* сцена */
-.scene {
-    height: 100dvh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-
-    text-align: center;
-    padding: 20px;
-    box-sizing: border-box;
-}
-
-/* 💡 ВЕРХНИЙ ТЕКСТ (ФИКС ДЛЯ МОБИЛКИ) */
+/* 💡 верхний текст */
 .intro {
     font-size: 18px;
-    margin-bottom: 20px;
 
     position: absolute;
     top: calc(env(safe-area-inset-top, 20px) + 10px);
@@ -52,28 +38,49 @@ body::before {
     transform: translateX(-50%);
 
     z-index: 1000;
-    opacity: 1;
+    text-align: center;
+
     pointer-events: none;
 }
 
-.intro.hide {
-    opacity: 0;
+/* сцена (ВАЖНО: теперь НЕ ломает центрирование) */
+.scene {
+    height: 100dvh;
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+
+    padding: 20px;
+    box-sizing: border-box;
+
+    position: relative;
 }
 
-/* ❤️ сердце (точно кликается) */
+/* ❤️ сердце — теперь идеальный центр */
 .heart {
     font-size: 92px;
     cursor: pointer;
     animation: pulse 1.4s infinite;
 
-    position: relative;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
     z-index: 10;
 }
 
 @keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.15); }
-    100% { transform: scale(1); }
+    0% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.15); }
+    100% { transform: translate(-50%, -50%) scale(1); }
 }
 
 /* имя */
@@ -92,7 +99,7 @@ body::before {
     opacity: 1;
 }
 
-/* сообщение */
+/* текст */
 .message {
     font-size: 24px;
     margin-top: 10px;
@@ -145,7 +152,6 @@ body::before {
     position: fixed;
     pointer-events: none;
     z-index: 1;
-
     animation: floatUp linear forwards;
 }
 
@@ -162,7 +168,6 @@ body::before {
     background: white;
     opacity: 0;
     z-index: 9999;
-    pointer-events: none;
 }
 
 .flash.show {
@@ -234,7 +239,7 @@ function showName(i = 0) {
     }
 }
 
-/* telegram typing */
+/* typing */
 function showText() {
     const el = document.getElementById("text");
     const text = "С днем рождения, любимая ❤️";
