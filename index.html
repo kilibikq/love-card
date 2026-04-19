@@ -48,10 +48,19 @@ html, body {
     height: 60px;
     background: #17212b;
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    justify-content: center;
     padding: 0 15px;
-    font-weight: bold;
     color: white;
+}
+
+.title {
+    font-weight: bold;
+}
+
+.status {
+    font-size: 12px;
+    color: #7aa2c0;
 }
 
 /* сообщения */
@@ -59,8 +68,6 @@ html, body {
     flex: 1;
     padding: 15px;
     overflow-y: auto;
-
-    /* 💥 ВАЖНЫЙ ФИКС — чтобы подарок не обрезался */
     padding-bottom: 120px;
 }
 
@@ -70,12 +77,11 @@ html, body {
     padding: 10px 12px;
     border-radius: 12px;
     max-width: 85%;
-
     margin-top: 10px;
 
     opacity: 0;
     transform: translateY(10px);
-    transition: 0.4s;
+    transition: 0.5s;
     color: white;
 }
 
@@ -84,19 +90,24 @@ html, body {
     transform: translateY(0);
 }
 
+/* typing */
+.typing {
+    font-size: 14px;
+    color: #7aa2c0;
+    margin-top: 10px;
+}
+
 /* подарок */
 .gift {
     font-size: 50px;
     text-align: center;
-    margin-top: 25px;
+    margin-top: 30px;
     opacity: 0;
-    transform: translateY(10px);
-    transition: 0.6s;
+    transition: 0.8s;
 }
 
 .gift.show {
     opacity: 1;
-    transform: translateY(0);
 }
 </style>
 
@@ -108,7 +119,10 @@ html, body {
 
 <div class="chat" id="chat">
 
-    <div class="topbar">Darling❤️</div>
+    <div class="topbar">
+        <div class="title">Darling❤️</div>
+        <div class="status">в сети</div>
+    </div>
 
     <div class="messages" id="messages"></div>
 
@@ -143,38 +157,70 @@ function openChat() {
     sendMessages();
 }
 
-/* 💥 РАНДОМНАЯ ЗАДЕРЖКА */
+/* random */
 function rand(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+/* typing */
+function showTyping() {
+    const box = document.getElementById("messages");
+
+    const t = document.createElement("div");
+    t.className = "typing";
+    t.id = "typing";
+    t.innerText = "печатает…";
+
+    box.appendChild(t);
+    scrollDown();
+}
+
+function hideTyping() {
+    const t = document.getElementById("typing");
+    if (t) t.remove();
+}
+
+/* сообщение */
 function addMessage(text, delay) {
     setTimeout(() => {
-        const msg = document.createElement("div");
-        msg.className = "msg";
-        msg.innerText = text;
 
-        document.getElementById("messages").appendChild(msg);
+        showTyping();
 
-        setTimeout(() => msg.classList.add("show"), 50);
+        /* 💥 ДЛИТЕЛЬНАЯ ПАУЗА "ДУМАЕТ" */
+        setTimeout(() => {
+            hideTyping();
 
-        scrollDown();
+            const msg = document.createElement("div");
+            msg.className = "msg";
+            msg.innerText = text;
+
+            document.getElementById("messages").appendChild(msg);
+
+            setTimeout(() => msg.classList.add("show"), 80);
+
+            scrollDown();
+
+        }, rand(1800, 3200)); // 👈 ВОТ ГЛАВНЫЙ ФИКС СКОРОСТИ
 
     }, delay);
 }
 
+/* scroll */
 function scrollDown() {
     const box = document.getElementById("messages");
     setTimeout(() => {
         box.scrollTop = box.scrollHeight;
-    }, 100);
+    }, 150);
 }
 
+/* отправка */
 function sendMessages() {
     let time = 0;
 
-    messages.forEach((m) => {
-        time += rand(700, 1400); // 💥 ВОТ ТУТ РАНДОМ
+    messages.forEach((m, i) => {
+
+        /* 💥 МЕЖДУ СООБЩЕНИЯМИ ТЕПЕРЬ ПАУЗА ДЛИННЕЕ */
+        time += rand(2200, 4200);
 
         addMessage(m, time);
     });
@@ -189,15 +235,15 @@ function sendMessages() {
         setTimeout(() => {
             gift.classList.add("show");
             scrollDown();
-        }, 300);
+        }, 500);
 
-    }, time + 800);
+    }, time + 2000);
 }
 
 /* старт */
 setTimeout(() => {
     showNotify();
-}, 1200);
+}, 1500);
 
 </script>
 
