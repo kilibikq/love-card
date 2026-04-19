@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-<title>💙</title>
+<title>💖</title>
 
 <style>
 html, body {
@@ -12,6 +12,7 @@ html, body {
     padding: 0;
     height: 100%;
     overflow: hidden;
+
     background: radial-gradient(circle at top, #0f1020, #05060f);
     font-family: Arial, sans-serif;
     color: white;
@@ -34,27 +35,39 @@ body::before {
     align-items: center;
     justify-content: center;
     flex-direction: column;
+
     text-align: center;
     padding: 20px;
+    box-sizing: border-box;
 }
 
-/* интро */
+/* 💡 ВЕРХНИЙ ТЕКСТ (ФИКС ДЛЯ МОБИЛКИ) */
 .intro {
     font-size: 18px;
-    margin-bottom: 15px;
-    transition: 0.8s;
+    margin-bottom: 20px;
+
+    position: absolute;
+    top: calc(env(safe-area-inset-top, 20px) + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+
+    z-index: 1000;
+    opacity: 1;
+    pointer-events: none;
 }
 
 .intro.hide {
     opacity: 0;
-    transform: translateY(-10px);
 }
 
-/* сердце */
+/* ❤️ сердце (точно кликается) */
 .heart {
     font-size: 92px;
     cursor: pointer;
     animation: pulse 1.4s infinite;
+
+    position: relative;
+    z-index: 10;
 }
 
 @keyframes pulse {
@@ -68,8 +81,10 @@ body::before {
     font-size: 44px;
     min-height: 50px;
     margin-top: 10px;
+
     opacity: 0;
     transition: 0.8s;
+
     text-shadow: 0 0 20px rgba(255,255,255,0.8);
 }
 
@@ -81,6 +96,7 @@ body::before {
 .message {
     font-size: 24px;
     margin-top: 10px;
+
     opacity: 0;
     transition: 1s;
 }
@@ -93,6 +109,7 @@ body::before {
 .cake {
     font-size: 80px;
     margin-top: 15px;
+
     opacity: 0;
     transform: scale(0.6);
     transition: 0.6s;
@@ -103,7 +120,7 @@ body::before {
     transform: scale(1.15);
 }
 
-/* финальные строки */
+/* финал */
 .final {
     margin-top: 15px;
     font-size: 16px;
@@ -111,6 +128,7 @@ body::before {
     max-width: 90vw;
 }
 
+/* строки */
 .line {
     opacity: 0;
     transform: translateY(10px);
@@ -122,26 +140,13 @@ body::before {
     transform: translateY(0);
 }
 
-/* 💙 TELEGRAM typing */
-.cursor {
-    display: inline-block;
-    animation: blink 1s infinite;
-    margin-left: 2px;
-    color: rgba(255,255,255,0.8);
-}
-
-@keyframes blink {
-    0% { opacity: 1; }
-    50% { opacity: 0; }
-    100% { opacity: 1; }
-}
-
 /* частицы */
 .particle {
     position: fixed;
     pointer-events: none;
-    animation: floatUp linear forwards;
     z-index: 1;
+
+    animation: floatUp linear forwards;
 }
 
 @keyframes floatUp {
@@ -156,7 +161,8 @@ body::before {
     inset: 0;
     background: white;
     opacity: 0;
-    z-index: 10;
+    z-index: 9999;
+    pointer-events: none;
 }
 
 .flash.show {
@@ -178,7 +184,7 @@ body::before {
 
 <div class="scene">
 
-    <div class="intro" id="intro">у меня для тебя кое-что 💙</div>
+    <div class="intro" id="intro">у меня есть для тебя кое-что ❤️</div>
 
     <div class="heart" id="heart">💖</div>
 
@@ -193,10 +199,10 @@ body::before {
         <div class="line">Я не буду говорить слишком идеально — это не главное 💫</div>
         <div class="line">Я просто рад, что ты есть в моей жизни… правда.</div>
         <div class="line">Ты очень особенная для меня.</div>
-        <div class="line">И я хочу, чтобы у тебя было больше спокойных и тёплых дней 💖</div>
+        <div class="line">И я хочу, чтобы у тебя было больше спокойных дней 💖</div>
         <div class="line">Чтобы ты чаще улыбалась просто так 🌸</div>
         <div class="line">И чтобы ты никогда не сомневалась в себе.</div>
-        <div class="line">Ты намного лучше, чем сама думаешь.</div>
+        <div class="line">Ты намного лучше, чем думаешь.</div>
         <div class="line">И если честно… я просто хочу, чтобы ты была счастлива ❤️</div>
         <div class="line">Сегодня. И всегда.</div>
     </div>
@@ -228,7 +234,7 @@ function showName(i = 0) {
     }
 }
 
-/* 💙 TELEGRAM typing */
+/* telegram typing */
 function showText() {
     const el = document.getElementById("text");
     const text = "С днем рождения, любимая ❤️";
@@ -239,8 +245,9 @@ function showText() {
     const wrapper = document.createElement("span");
     const cursor = document.createElement("span");
 
-    cursor.className = "cursor";
     cursor.textContent = "▍";
+    cursor.style.animation = "blink 1s infinite";
+    cursor.style.marginLeft = "2px";
 
     el.appendChild(wrapper);
     el.appendChild(cursor);
@@ -248,11 +255,11 @@ function showText() {
     let words = text.split(" ");
     let i = 0;
 
-    function typeNext() {
+    function type() {
         if (i < words.length) {
             wrapper.innerHTML += words[i] + " ";
             i++;
-            setTimeout(typeNext, 180);
+            setTimeout(type, 180);
         } else {
             cursor.remove();
 
@@ -264,7 +271,7 @@ function showText() {
         }
     }
 
-    typeNext();
+    type();
 }
 
 /* строки */
