@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-<title>Telegram</title>
+<title>💙</title>
 
 <style>
 html, body {
@@ -13,7 +13,44 @@ html, body {
     height: 100%;
     background: #0e1621;
     font-family: Arial, sans-serif;
+    overflow: hidden;
+}
+
+/* старт экран */
+.start {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* уведомление */
+.notify {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+
+    background: #1c2b3a;
     color: white;
+    padding: 12px 16px;
+    border-radius: 12px;
+
+    opacity: 0;
+    transition: 0.4s;
+    cursor: pointer;
+}
+
+.notify.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* чат */
+.chat {
+    display: none;
+    flex-direction: column;
+    height: 100vh;
 }
 
 /* верх */
@@ -24,28 +61,29 @@ html, body {
     align-items: center;
     padding: 0 15px;
     font-weight: bold;
-    position: fixed;
-    width: 100%;
-    top: 0;
-    z-index: 10;
+    color: white;
 }
 
-/* чат */
-.chat {
-    padding: 80px 15px 100px;
+/* сообщения */
+.messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
 }
 
-/* сообщение */
+/* пузырь */
 .msg {
     background: #182533;
-    padding: 12px 14px;
+    padding: 10px 12px;
     border-radius: 12px;
-    max-width: 80%;
+    max-width: 85%;
+
     margin-top: 10px;
 
     opacity: 0;
     transform: translateY(10px);
-    transition: 0.4s;
+    transition: 0.5s;
+    color: white;
 }
 
 .msg.show {
@@ -53,47 +91,23 @@ html, body {
     transform: translateY(0);
 }
 
-/* входящее */
-.incoming {
+/* входящие */
+.in {
     background: #2b5278;
     margin-right: auto;
 }
 
-/* typing */
-.typing {
-    display: inline-block;
-}
-
-.dots::after {
-    content: "";
-    animation: dots 1.2s infinite;
-}
-
-@keyframes dots {
-    0% { content: ""; }
-    33% { content: "."; }
-    66% { content: ".."; }
-    100% { content: "..."; }
-}
-
-/* уведомление */
-.notify {
-    position: fixed;
-    top: 80px;
-    right: 15px;
-    background: #1c2b3a;
-    padding: 10px 14px;
-    border-radius: 10px;
-
+/* подарок */
+.gift {
+    font-size: 40px;
+    text-align: center;
+    margin-top: 20px;
     opacity: 0;
-    transform: translateY(-10px);
-    transition: 0.4s;
-    z-index: 20;
+    transition: 0.6s;
 }
 
-.notify.show {
+.gift.show {
     opacity: 1;
-    transform: translateY(0);
 }
 </style>
 
@@ -101,51 +115,93 @@ html, body {
 
 <body>
 
-<div class="topbar">💙 Telegram</div>
+<!-- уведомление -->
+<div class="notify" id="notify">Новое сообщение💌</div>
 
-<div class="notify" id="notify">Новое сообщение 💌</div>
+<!-- старт -->
+<div class="start" id="start"></div>
 
-<div class="chat">
+<!-- чат -->
+<div class="chat" id="chat">
 
-    <div class="msg incoming" id="typingBox">
-        <span class="typing">печатает<span class="dots"></span></span>
-    </div>
+    <div class="topbar">Darling❤️</div>
 
-    <div class="msg incoming" id="msg">
-        Слушай… сегодня твой день ✨<br><br>
-        Я просто рад, что ты есть в моей жизни 💫<br><br>
-        Ты очень особенная для меня 🌸<br><br>
-        И я хочу, чтобы ты была счастлива ❤️
-    </div>
+    <div class="messages" id="messages"></div>
 
 </div>
 
 <script>
 
+const messages = [
+"Лерочка..",
+"Слушай… сегодня твой день",
+"Я не буду пытаться сказать что-то слишком идеальное — да и, честно, это сейчас не главное",
+"Я просто рад, что ты есть в моей жизни… правда🥰",
+"Ты для меня очень особенная. Даже если я не всегда умею это нормально показать.",
+"И знаешь… я правда хочу, чтобы у тебя было больше спокойных дней.",
+"Таких, где тебе легко, где ты просто улыбаешься ни с чего 💖",
+"И чтобы ты меньше сомневалась в себе — ты намного лучше, чем иногда думаешь 🌸",
+"И если совсем честно… я просто хочу, чтобы ты была счастлива. По-настоящему.",
+"Сегодня. И всегда ❤️",
+"Поздравляю тебя с твоим 16 днем рождения, котенок💋"
+];
+
 function showNotify() {
     const n = document.getElementById("notify");
     n.classList.add("show");
 
-    setTimeout(() => n.classList.remove("show"), 2000);
+    n.onclick = openChat;
 }
 
-function showMessage() {
-    const typing = document.getElementById("typingBox");
-    const msg = document.getElementById("msg");
+function openChat() {
+    document.getElementById("start").style.display = "none";
+    document.getElementById("notify").style.display = "none";
+    document.getElementById("chat").style.display = "flex";
 
-    typing.style.display = "none";
-    msg.classList.add("show");
+    typeMessages();
+}
+
+function addMessage(text, delay) {
+    setTimeout(() => {
+        const msg = document.createElement("div");
+        msg.className = "msg in";
+        msg.innerText = text;
+
+        document.getElementById("messages").appendChild(msg);
+
+        setTimeout(() => {
+            msg.classList.add("show");
+        }, 50);
+
+    }, delay);
+}
+
+function typeMessages() {
+    let time = 0;
+
+    messages.forEach((m) => {
+        addMessage(m, time);
+        time += 900;
+    });
+
+    setTimeout(() => {
+        const gift = document.createElement("div");
+        gift.className = "gift";
+        gift.innerText = "🎁";
+
+        document.getElementById("messages").appendChild(gift);
+
+        setTimeout(() => {
+            gift.classList.add("show");
+        }, 300);
+
+    }, time + 500);
 }
 
 /* старт */
 setTimeout(() => {
-    showNotify(); // уведомление как в Telegram
-
-    setTimeout(() => {
-        showMessage();
-    }, 1800);
-
-}, 1000);
+    showNotify();
+}, 1200);
 
 </script>
 
