@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+<title>💖</title>
+
+<style>
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    background: radial-gradient(circle at top, #0f1020, #05060f);
+    font-family: Arial, sans-serif;
+    color: white;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(white 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.06;
+}
+
+.scene {
+    height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+}
+
+.intro {
+    font-size: 18px;
+    transition: 1s;
+}
+
+.intro.hide {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+.heart {
+    font-size: 90px;
+    animation: pulse 1.5s infinite;
+    cursor: pointer;
+    opacity: 0;
+    transition: 1s;
+}
+
+.heart.show {
+    opacity: 1;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+}
+
+.name {
+    font-size: 44px;
+    min-height: 50px;
+    opacity: 0;
+    transition: 0.8s;
+    text-shadow: 0 0 20px rgba(255,255,255,0.8);
+}
+
+.name.show {
+    opacity: 1;
+}
+
+.message {
+    font-size: 26px;
+    margin-top: 10px;
+    opacity: 0;
+    transition: 1s;
+}
+
+.message.show {
+    opacity: 1;
+}
+
+.cake {
+    font-size: 80px;
+    margin-top: 15px;
+    opacity: 0;
+    transform: scale(0.6);
+    transition: 0.7s;
+}
+
+.cake.show {
+    opacity: 1;
+    transform: scale(1.2);
+}
+
+/* 💌 строки пожеланий */
+.final {
+    margin-top: 15px;
+    font-size: 16px;
+    line-height: 1.7;
+    max-width: 90vw;
+}
+
+.line {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: 1s;
+}
+
+.line.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 💫 частицы */
+.particle {
+    position: fixed;
+    pointer-events: none;
+    animation: floatUp linear forwards;
+}
+
+@keyframes floatUp {
+    0% { transform: translateY(0); opacity: 0; }
+    10% { opacity: 1; }
+    100% { transform: translateY(-120vh); opacity: 0; }
+}
+
+/* 💥 вспышка */
+.flash {
+    position: fixed;
+    inset: 0;
+    background: white;
+    opacity: 0;
+    z-index: 10;
+}
+
+.flash.show {
+    animation: flash 0.4s ease;
+}
+
+@keyframes flash {
+    0% { opacity: 0; }
+    50% { opacity: 0.5; }
+    100% { opacity: 0; }
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="flash" id="flash"></div>
+
+<div class="scene">
+
+    <div class="intro" id="intro">у меня для тебя кое-что 💖</div>
+
+    <div class="heart" id="heart">💖</div>
+
+    <div class="name" id="name"></div>
+
+    <div class="message" id="text"></div>
+
+    <div class="cake" id="cake">🎂</div>
+
+    <div class="final">
+        <div class="line" id="l1">пусть твоя жизнь будет тёплой и спокойной ✨</div>
+        <div class="line" id="l2">пусть рядом будут только искренние люди 💫</div>
+        <div class="line" id="l3">пусть ты чаще улыбаешься без причины 🌸</div>
+        <div class="line" id="l4">и пусть всё, о чём ты мечтаешь, обязательно сбудется 💖</div>
+    </div>
+
+</div>
+
+<script>
+const name = "Лерочка";
+const text = "С днем рождения, любимая ❤️";
+
+let started = false;
+
+function flash() {
+    const f = document.getElementById("flash");
+    f.classList.add("show");
+    setTimeout(() => f.classList.remove("show"), 400);
+}
+
+/* 🌟 имя */
+function showName(i = 0) {
+    const el = document.getElementById("name");
+    if (i === 0) el.textContent = "";
+
+    if (i < name.length) {
+        el.textContent += name[i];
+        setTimeout(() => showName(i + 1), 130);
+    } else {
+        flash();
+        el.classList.add("show");
+        setTimeout(showText, 500);
+    }
+}
+
+/* 💬 текст */
+function showText(i = 0) {
+    const el = document.getElementById("text");
+    if (i === 0) el.textContent = "";
+
+    if (i < text.length) {
+        el.textContent += text[i];
+        setTimeout(() => showText(i + 1), 55);
+    } else {
+        el.classList.add("show");
+
+        setTimeout(() => {
+            flash();
+            document.getElementById("cake").classList.add("show");
+
+            setTimeout(showLines, 800);
+        }, 700);
+    }
+}
+
+/* 💌 строки по очереди */
+function showLines() {
+    const lines = [
+        document.getElementById("l1"),
+        document.getElementById("l2"),
+        document.getElementById("l3"),
+        document.getElementById("l4")
+    ];
+
+    let i = 0;
+
+    function next() {
+        if (i < lines.length) {
+            lines[i].classList.add("show");
+            i++;
+            setTimeout(next, 900);
+        }
+    }
+
+    next();
+}
+
+/* 💫 частицы */
+function spawnParticle() {
+    const p = document.createElement("div");
+    p.className = "particle";
+
+    const symbols = ["✨", "⭐", "💫", "🌸"];
+    p.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+
+    p.style.left = Math.random() * 100 + "vw";
+    p.style.top = "100vh";
+
+    const duration = 7 + Math.random() * 4;
+    p.style.animationDuration = duration + "s";
+
+    document.body.appendChild(p);
+
+    setTimeout(() => p.remove(), duration * 1000);
+}
+
+setInterval(spawnParticle, 220);
+
+/* 🚀 старт */
+document.getElementById("heart").onclick = function () {
+    if (started) return;
+    started = true;
+
+    document.getElementById("intro").classList.add("hide");
+
+    setTimeout(() => {
+        showName();
+    }, 600);
+};
+</script>
+
+</body>
+</html>
