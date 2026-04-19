@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>С Днем Рождения ❤️</title>
+
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    background: radial-gradient(circle at top, #1f1f2e, #0f172a 80%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+    color: white;
+    position: relative;
+}
+
+/* ⭐ звёздный фон */
+body::before {
+    content: "";
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    background-image: radial-gradient(white 1px, transparent 1px);
+    background-size: 50px 50px;
+    opacity: 0.08;
+    animation: moveStars 60s linear infinite;
+}
+
+@keyframes moveStars {
+    from { transform: translateY(0); }
+    to { transform: translateY(-1000px); }
+}
+
+/* контейнер */
+.container {
+    text-align: center;
+    z-index: 2;
+    padding: 20px;
+}
+
+/* сердце */
+.heart {
+    font-size: clamp(60px, 12vw, 90px);
+    cursor: pointer;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+}
+
+/* текст */
+.message {
+    font-size: clamp(22px, 5vw, 38px);
+    margin-top: 20px;
+    min-height: 50px;
+    text-shadow: 0 0 12px rgba(255,200,200,0.7);
+}
+
+/* подпись */
+.subtext {
+    font-size: clamp(14px, 3.5vw, 18px);
+    margin-top: 10px;
+    opacity: 0;
+    transition: opacity 1s;
+    color: #ffdede;
+}
+
+/* торт */
+.cake {
+    font-size: clamp(60px, 12vw, 85px);
+    margin-top: 20px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 1s ease;
+}
+
+/* финал */
+.final {
+    margin-top: 20px;
+    font-size: clamp(16px, 4vw, 24px);
+    color: white;
+    text-shadow: 0 0 10px rgba(255,255,255,0.6);
+    display: none;
+}
+
+.final.show {
+    display: block;
+    animation: fadeIn 1.2s ease forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 🌌 частицы */
+.particle {
+    position: fixed;
+    width: 4px;
+    height: 4px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 50%;
+    top: 100vh;
+    left: 50vw;
+    pointer-events: none;
+    animation: floatUp linear forwards;
+    box-shadow: 0 0 6px rgba(255,255,255,0.8);
+}
+
+@keyframes floatUp {
+    0% { transform: translateY(0); opacity: 0; }
+    10% { opacity: 1; }
+    100% { transform: translateY(-120vh); opacity: 0; }
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+    <div class="heart" id="heart">❤️</div>
+    <div class="message" id="text"></div>
+    <div class="subtext" id="sub">ты — самое лучшее, что случилось со мной ❤️</div>
+    <div class="cake" id="cake">🎂</div>
+    <div class="final" id="final">я люблю тебя ❤️</div>
+</div>
+
+<script>
+const text = "С днем рождения, любимая ❤️";
+let started = false;
+
+/* печать текста */
+function typeText(el, txt, i = 0) {
+    if (i === 0) el.textContent = "";
+
+    if (i < txt.length) {
+        el.textContent += txt[i];
+        setTimeout(() => typeText(el, txt, i + 1), 60);
+    } else {
+        document.getElementById("sub").style.opacity = 1;
+
+        setTimeout(() => {
+            document.getElementById("cake").classList.add("show");
+
+            setTimeout(() => {
+                document.getElementById("final").classList.add("show");
+            }, 1200);
+
+        }, 800);
+    }
+}
+
+/* частицы */
+function spawnParticle() {
+    const p = document.createElement("div");
+    p.className = "particle";
+
+    p.style.left = Math.random() * 100 + "vw";
+
+    const size = 2 + Math.random() * 4;
+    p.style.width = size + "px";
+    p.style.height = size + "px";
+
+    const duration = 3 + Math.random() * 3;
+    p.style.animationDuration = duration + "s";
+
+    document.body.appendChild(p);
+
+    setTimeout(() => p.remove(), duration * 1000);
+}
+
+setInterval(spawnParticle, 70);
+
+/* старт */
+function start() {
+    if (started) return;
+    started = true;
+
+    document.getElementById("heart").style.opacity = 0.5;
+
+    typeText(document.getElementById("text"), text);
+}
+
+document.getElementById("heart").onclick = start;
+</script>
+
+</body>
+</html>
