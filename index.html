@@ -20,7 +20,7 @@ body {
     position: relative;
 }
 
-/* ⭐ звёздный фон */
+/* ⭐ фон */
 body::before {
     content: "";
     position: absolute;
@@ -143,14 +143,17 @@ body::before {
     <div class="message" id="text"></div>
     <div class="subtext" id="sub">ты — самое лучшее, что случилось со мной ❤️</div>
     <div class="cake" id="cake">🎂</div>
-    <div class="final" id="final">я люблю тебя ❤️</div>
+    <div class="final" id="final">
+        С днём рождения, солнышко ❤️<br>
+        Пусть каждый твой день будет наполнен улыбками,<br>
+        уютом и счастьем, которого ты заслуживаешь ✨
+    </div>
 </div>
 
 <script>
 const text = "С днем рождения, любимая ❤️";
 let started = false;
 
-/* печать текста */
 function typeText(el, txt, i = 0) {
     if (i === 0) el.textContent = "";
 
