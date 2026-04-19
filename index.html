@@ -4,180 +4,96 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-<title>💖</title>
+<title>Telegram</title>
 
 <style>
 html, body {
     margin: 0;
     padding: 0;
     height: 100%;
-    overflow: hidden;
-
-    background: radial-gradient(circle at top, #0f1020, #05060f);
+    background: #0e1621;
     font-family: Arial, sans-serif;
     color: white;
 }
 
-/* фон */
-body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background-image: radial-gradient(white 1px, transparent 1px);
-    background-size: 60px 60px;
-    opacity: 0.06;
-}
-
-/* 💡 верхний текст */
-.intro {
-    font-size: 18px;
-
-    position: absolute;
-    top: calc(env(safe-area-inset-top, 20px) + 10px);
-    left: 50%;
-    transform: translateX(-50%);
-
-    z-index: 1000;
-    text-align: center;
-
-    pointer-events: none;
-}
-
-/* сцена (ВАЖНО: теперь НЕ ломает центрирование) */
-.scene {
-    height: 100dvh;
-    width: 100%;
-
+/* верх */
+.topbar {
+    height: 60px;
+    background: #17212b;
     display: flex;
-    flex-direction: column;
-
     align-items: center;
-
-    justify-content: center;
-
-    text-align: center;
-
-    padding: 20px;
-    box-sizing: border-box;
-
-    position: relative;
-}
-
-/* ❤️ сердце — теперь идеальный центр */
-.heart {
-    font-size: 92px;
-    cursor: pointer;
-    animation: pulse 1.4s infinite;
-
-    position: absolute;
-    top: 50%;
-    left: 50%;
-
-    transform: translate(-50%, -50%);
+    padding: 0 15px;
+    font-weight: bold;
+    position: fixed;
+    width: 100%;
+    top: 0;
     z-index: 10;
 }
 
-@keyframes pulse {
-    0% { transform: translate(-50%, -50%) scale(1); }
-    50% { transform: translate(-50%, -50%) scale(1.15); }
-    100% { transform: translate(-50%, -50%) scale(1); }
+/* чат */
+.chat {
+    padding: 80px 15px 100px;
 }
 
-/* имя */
-.name {
-    font-size: 44px;
-    min-height: 50px;
+/* сообщение */
+.msg {
+    background: #182533;
+    padding: 12px 14px;
+    border-radius: 12px;
+    max-width: 80%;
     margin-top: 10px;
 
-    opacity: 0;
-    transition: 0.8s;
-
-    text-shadow: 0 0 20px rgba(255,255,255,0.8);
-}
-
-.name.show {
-    opacity: 1;
-}
-
-/* текст */
-.message {
-    font-size: 24px;
-    margin-top: 10px;
-
-    opacity: 0;
-    transition: 1s;
-}
-
-.message.show {
-    opacity: 1;
-}
-
-/* торт */
-.cake {
-    font-size: 80px;
-    margin-top: 15px;
-
-    opacity: 0;
-    transform: scale(0.6);
-    transition: 0.6s;
-}
-
-.cake.show {
-    opacity: 1;
-    transform: scale(1.15);
-}
-
-/* финал */
-.final {
-    margin-top: 15px;
-    font-size: 16px;
-    line-height: 1.7;
-    max-width: 90vw;
-}
-
-/* строки */
-.line {
     opacity: 0;
     transform: translateY(10px);
-    transition: 0.9s;
+    transition: 0.4s;
 }
 
-.line.show {
+.msg.show {
     opacity: 1;
     transform: translateY(0);
 }
 
-/* частицы */
-.particle {
-    position: fixed;
-    pointer-events: none;
-    z-index: 1;
-    animation: floatUp linear forwards;
+/* входящее */
+.incoming {
+    background: #2b5278;
+    margin-right: auto;
 }
 
-@keyframes floatUp {
-    0% { transform: translateY(0); opacity: 0; }
-    10% { opacity: 1; }
-    100% { transform: translateY(-120vh); opacity: 0; }
+/* typing */
+.typing {
+    display: inline-block;
 }
 
-/* вспышка */
-.flash {
+.dots::after {
+    content: "";
+    animation: dots 1.2s infinite;
+}
+
+@keyframes dots {
+    0% { content: ""; }
+    33% { content: "."; }
+    66% { content: ".."; }
+    100% { content: "..."; }
+}
+
+/* уведомление */
+.notify {
     position: fixed;
-    inset: 0;
-    background: white;
+    top: 80px;
+    right: 15px;
+    background: #1c2b3a;
+    padding: 10px 14px;
+    border-radius: 10px;
+
     opacity: 0;
-    z-index: 9999;
+    transform: translateY(-10px);
+    transition: 0.4s;
+    z-index: 20;
 }
 
-.flash.show {
-    animation: flash 0.4s ease;
-}
-
-@keyframes flash {
-    0% { opacity: 0; }
-    50% { opacity: 0.5; }
-    100% { opacity: 0; }
+.notify.show {
+    opacity: 1;
+    transform: translateY(0);
 }
 </style>
 
@@ -185,148 +101,52 @@ body::before {
 
 <body>
 
-<div class="flash" id="flash"></div>
+<div class="topbar">💙 Telegram</div>
 
-<div class="scene">
+<div class="notify" id="notify">Новое сообщение 💌</div>
 
-    <div class="intro" id="intro">у меня есть для тебя кое-что ❤️</div>
+<div class="chat">
 
-    <div class="heart" id="heart">💖</div>
+    <div class="msg incoming" id="typingBox">
+        <span class="typing">печатает<span class="dots"></span></span>
+    </div>
 
-    <div class="name" id="name"></div>
-
-    <div class="message" id="text"></div>
-
-    <div class="cake" id="cake">🎂</div>
-
-    <div class="final">
-        <div class="line">Слушай… сегодня твой день ✨</div>
-        <div class="line">Я не буду говорить слишком идеально — это не главное 💫</div>
-        <div class="line">Я просто рад, что ты есть в моей жизни… правда.</div>
-        <div class="line">Ты очень особенная для меня.</div>
-        <div class="line">И я хочу, чтобы у тебя было больше спокойных дней 💖</div>
-        <div class="line">Чтобы ты чаще улыбалась просто так 🌸</div>
-        <div class="line">И чтобы ты никогда не сомневалась в себе.</div>
-        <div class="line">Ты намного лучше, чем думаешь.</div>
-        <div class="line">И если честно… я просто хочу, чтобы ты была счастлива ❤️</div>
-        <div class="line">Сегодня. И всегда.</div>
+    <div class="msg incoming" id="msg">
+        Слушай… сегодня твой день ✨<br><br>
+        Я просто рад, что ты есть в моей жизни 💫<br><br>
+        Ты очень особенная для меня 🌸<br><br>
+        И я хочу, чтобы ты была счастлива ❤️
     </div>
 
 </div>
 
 <script>
-const name = "Лерочка";
-let started = false;
 
-function flash() {
-    const f = document.getElementById("flash");
-    f.classList.add("show");
-    setTimeout(() => f.classList.remove("show"), 400);
+function showNotify() {
+    const n = document.getElementById("notify");
+    n.classList.add("show");
+
+    setTimeout(() => n.classList.remove("show"), 2000);
 }
 
-/* имя */
-function showName(i = 0) {
-    const el = document.getElementById("name");
-    if (i === 0) el.textContent = "";
+function showMessage() {
+    const typing = document.getElementById("typingBox");
+    const msg = document.getElementById("msg");
 
-    if (i < name.length) {
-        el.textContent += name[i];
-        setTimeout(() => showName(i + 1), 120);
-    } else {
-        flash();
-        el.classList.add("show");
-        setTimeout(showText, 500);
-    }
+    typing.style.display = "none";
+    msg.classList.add("show");
 }
-
-/* typing */
-function showText() {
-    const el = document.getElementById("text");
-    const text = "С днем рождения, любимая ❤️";
-
-    el.innerHTML = "";
-    el.classList.add("show");
-
-    const wrapper = document.createElement("span");
-    const cursor = document.createElement("span");
-
-    cursor.textContent = "▍";
-    cursor.style.animation = "blink 1s infinite";
-    cursor.style.marginLeft = "2px";
-
-    el.appendChild(wrapper);
-    el.appendChild(cursor);
-
-    let words = text.split(" ");
-    let i = 0;
-
-    function type() {
-        if (i < words.length) {
-            wrapper.innerHTML += words[i] + " ";
-            i++;
-            setTimeout(type, 180);
-        } else {
-            cursor.remove();
-
-            setTimeout(() => {
-                flash();
-                document.getElementById("cake").classList.add("show");
-                setTimeout(showLines, 800);
-            }, 400);
-        }
-    }
-
-    type();
-}
-
-/* строки */
-function showLines() {
-    const lines = document.querySelectorAll(".line");
-    let i = 0;
-
-    function next() {
-        if (i < lines.length) {
-            lines[i].classList.add("show");
-            i++;
-            setTimeout(next, 850);
-        }
-    }
-
-    next();
-}
-
-/* частицы */
-function spawnParticle() {
-    const p = document.createElement("div");
-    p.className = "particle";
-
-    const symbols = ["✨", "⭐", "💫", "🌸"];
-    p.innerText = symbols[Math.floor(Math.random() * symbols.length)];
-
-    p.style.left = Math.random() * 100 + "vw";
-    p.style.top = "100vh";
-
-    const duration = 7 + Math.random() * 4;
-    p.style.animationDuration = duration + "s";
-
-    document.body.appendChild(p);
-
-    setTimeout(() => p.remove(), duration * 1000);
-}
-
-setInterval(spawnParticle, 240);
 
 /* старт */
-document.getElementById("heart").onclick = function () {
-    if (started) return;
-    started = true;
-
-    document.getElementById("intro").classList.add("hide");
+setTimeout(() => {
+    showNotify(); // уведомление как в Telegram
 
     setTimeout(() => {
-        showName();
-    }, 600);
-};
+        showMessage();
+    }, 1800);
+
+}, 1000);
+
 </script>
 
 </body>
