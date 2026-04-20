@@ -16,10 +16,11 @@ html, body {
     color:white;
 }
 
-/* 🎮 игра */
+/* 🎮 ИГРА */
 .game {
     position:fixed;
     inset:0;
+    z-index:1;
 }
 
 .game-text {
@@ -29,24 +30,27 @@ html, body {
     transform:translate(-50%,-50%);
     color:#7aa2c0;
     pointer-events:none;
+    z-index:2;
 }
 
 .score {
     position:fixed;
     top:15px;
     left:15px;
-    pointer-events:none;
+    z-index:2;
 }
 
-/* 💖 */
 .drop {
     position:absolute;
-    font-size:28px;
+    font-size:30px;
+    cursor:pointer;
+    z-index:10; /* 💥 важно */
+    pointer-events:auto;
     animation:fall linear forwards;
 }
 
 @keyframes fall {
-    from { transform:translateY(-50px); }
+    from { transform:translateY(-60px); }
     to { transform:translateY(110vh); }
 }
 
@@ -73,7 +77,6 @@ html, body {
     display:none;
     flex-direction:column;
     height:100vh;
-    transition:1s;
 }
 
 .topbar {
@@ -91,7 +94,7 @@ html, body {
 .messages {
     flex:1;
     padding:15px;
-    padding-bottom:90px;
+    padding-bottom:100px;
     overflow-y:auto;
     display:flex;
     flex-direction:column;
@@ -99,9 +102,9 @@ html, body {
 
 .msg {
     background:#2b5278;
-    padding:8px 12px;
+    padding:9px 13px;
     border-radius:14px;
-    max-width:70%;
+    max-width:75%;
     font-size:14px;
     margin-top:8px;
     opacity:0;
@@ -114,21 +117,7 @@ html, body {
     transform:translateY(0);
 }
 
-/* 🌙 cinematic fade */
-.fade {
-    position:fixed;
-    inset:0;
-    background:black;
-    opacity:0;
-    transition:1.8s;
-    z-index:50;
-}
-
-.fade.show {
-    opacity:0.95;
-}
-
-/* 🎬 финал сцена */
+/* 🎬 финал */
 .final {
     position:fixed;
     inset:0;
@@ -137,17 +126,14 @@ html, body {
     align-items:center;
     flex-direction:column;
     background:black;
-    z-index:60;
-    transform:scale(1.05);
-    transition:2s;
+    z-index:50;
 }
 
-/* 💔 heartbeat */
 .heart {
     font-size:90px;
     opacity:0;
     transform:scale(0.6);
-    transition:1.2s;
+    transition:1s;
     animation:pulse 1.2s infinite;
 }
 
@@ -161,8 +147,7 @@ html, body {
     position:absolute;
     font-size:22px;
     opacity:0;
-    transition:1.2s;
-    text-align:center;
+    transition:1s;
 }
 
 .top { top:25%; }
@@ -194,13 +179,10 @@ html, body {
     <div class="messages" id="messages"></div>
 </div>
 
-<!-- 🌙 -->
-<div class="fade" id="fade"></div>
-
-<!-- 🎬 финал -->
+<!-- ❤️ -->
 <div class="final" id="final">
     <div class="text top" id="top">С днём рождения</div>
-    <div class="heart" id="heart">❤️</div>
+    <div class="heart">❤️</div>
     <div class="text bottom" id="bottom">Любимая</div>
 </div>
 
@@ -215,7 +197,7 @@ const chat=document.getElementById("chat");
 const messages=document.getElementById("messages");
 const status=document.getElementById("status");
 
-/* 🎮 игра */
+/* 🎮 ИГРА */
 function spawn(){
 if(locked) return;
 
@@ -239,9 +221,9 @@ game.appendChild(el);
 setTimeout(()=>el.remove(),6000);
 }
 
-setInterval(spawn,650);
+setInterval(spawn,600);
 
-/* 📩 уведомление */
+/* 📩 */
 setTimeout(()=>notify.classList.add("show"),8000);
 
 /* 💥 старт */
@@ -250,26 +232,31 @@ if(locked) return;
 locked=true;
 
 game.style.opacity="0";
-game.style.pointerEvents="none";
-
 document.querySelector(".game-text").style.opacity="0";
 document.querySelector(".score").style.opacity="0";
-
 notify.style.display="none";
+
 chat.style.display="flex";
 
 startChat();
 };
 
-/* 💬 чат */
+/* 💬 ПОЛНОЕ ПОЗДРАВЛЕНИЕ (ВОССТАНОВЛЕНО) */
 function startChat(){
 
 const msgs=[
-"Лерочка..",
-"Сегодня твой день ✨",
-"Я просто рад, что ты есть 🥰",
-"Ты очень особенная 💖",
-"И я хочу, чтобы ты была счастлива ❤️",
+"Лерочка.. 💙",
+"Слушай… сегодня твой день ✨",
+"Я не буду пытаться сказать что-то идеальное — это не главное 💫",
+"Я просто рад, что ты есть в моей жизни… правда 🥰",
+"Ты очень особенная для меня 💖",
+"Даже если я не всегда это умею показать",
+"Я хочу, чтобы у тебя было больше спокойных дней 🌸",
+"Где тебе легко и хорошо просто так",
+"Чтобы ты чаще улыбалась 💕",
+"И меньше сомневалась в себе",
+"Ты намного лучше, чем думаешь ✨",
+"И если честно… я просто хочу, чтобы ты была счастлива ❤️",
 "Сегодня и всегда 💙"
 ];
 
@@ -294,42 +281,27 @@ setTimeout(()=>d.classList.add("show"),50);
 messages.scrollTop=messages.scrollHeight;
 
 i++;
-setTimeout(next,1000);
+setTimeout(next,900);
 
-},1400);
+},1300);
 }
 
 next();
 }
 
-/* 🎬 CINEMA FINISH */
+/* 🎬 финал */
 function finish(){
 
-const fade=document.getElementById("fade");
 const final=document.getElementById("final");
-const heart=document.getElementById("heart");
 const top=document.getElementById("top");
 const bottom=document.getElementById("bottom");
 
 chat.style.opacity="0";
 
-setTimeout(()=>fade.classList.add("show"),600);
+setTimeout(()=>final.style.display="flex",800);
 
-setTimeout(()=>{
-final.style.display="flex";
-},1800);
-
-setTimeout(()=>{
-heart.classList.add("show");
-},2600);
-
-setTimeout(()=>{
-top.classList.add("show");
-},3200);
-
-setTimeout(()=>{
-bottom.classList.add("show");
-},3800);
+setTimeout(()=>top.classList.add("show"),1400);
+setTimeout(()=>bottom.classList.add("show"),2200);
 }
 
 </script>
