@@ -3,13 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>💙</title>
 
 <style>
 html, body {
     margin: 0;
-    padding: 0;
     height: 100%;
     background: #0e1621;
     font-family: Arial;
@@ -21,6 +19,7 @@ html, body {
 .game {
     position: fixed;
     inset: 0;
+    z-index: 1;
 }
 
 .game-text {
@@ -30,23 +29,27 @@ html, body {
     transform: translate(-50%, -50%);
     color: #7aa2c0;
     pointer-events: none;
+    z-index: 2;
 }
 
 .score {
     position: fixed;
     top: 15px;
     left: 15px;
+    z-index: 2;
     pointer-events: none;
 }
 
 .drop {
     position: absolute;
-    font-size: 28px;
+    font-size: 30px;
+    cursor: pointer;
+    z-index: 3;
     animation: fall linear forwards;
 }
 
 @keyframes fall {
-    from { transform: translateY(-50px); }
+    from { transform: translateY(-60px); }
     to { transform: translateY(110vh); }
 }
 
@@ -93,14 +96,13 @@ html, body {
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
 }
 
 .msg {
     background: #2b5278;
     padding: 10px 14px;
     border-radius: 16px;
-    max-width: 75%;
+    max-width: 80%;
     margin-top: 10px;
     opacity: 0;
     transform: translateY(10px);
@@ -111,18 +113,6 @@ html, body {
     opacity: 1;
     transform: translateY(0);
 }
-
-/* 🎬 затемнение */
-.fade {
-    position: fixed;
-    inset: 0;
-    background: black;
-    opacity: 0;
-    transition: 1.5s;
-    z-index: 50;
-}
-
-.fade.show { opacity: 0.85; }
 
 /* 🎁 */
 .gift {
@@ -143,15 +133,15 @@ html, body {
 
 <body>
 
-<!-- 🎮 -->
+<!-- игра -->
 <div class="score">💖: <span id="score">0</span></div>
 <div class="game" id="game"></div>
 <div class="game-text">нажимай на сердечки 💖</div>
 
-<!-- 📩 -->
+<!-- уведомление -->
 <div class="notify" id="notify">Telegram — новое сообщение 💌</div>
 
-<!-- 💬 -->
+<!-- чат -->
 <div class="chat" id="chat">
     <div class="topbar">
         <div class="title">Darling❤️</div>
@@ -160,7 +150,6 @@ html, body {
     <div class="messages" id="messages"></div>
 </div>
 
-<div class="fade" id="fade"></div>
 <div class="gift" id="gift">🎁</div>
 
 <script>
@@ -174,7 +163,7 @@ const chat = document.getElementById("chat");
 const messages = document.getElementById("messages");
 const status = document.getElementById("status");
 
-/* 🎮 игра */
+/* 🎮 ИГРА (починена полностью) */
 function spawn() {
     if (locked) return;
 
@@ -198,19 +187,21 @@ function spawn() {
     setTimeout(() => el.remove(), 6000);
 }
 
-setInterval(spawn, 700);
+setInterval(spawn, 600);
 
 /* 📩 уведомление */
 setTimeout(() => {
     notify.classList.add("show");
-}, 10000);
+}, 8000);
 
 /* 💥 старт */
 notify.onclick = () => {
     if (locked) return;
     locked = true;
 
-    game.style.display = "none";
+    game.style.opacity = "0";
+    game.style.pointerEvents = "none";
+
     document.querySelector(".game-text").style.display = "none";
     document.querySelector(".score").style.display = "none";
     notify.style.display = "none";
@@ -220,16 +211,23 @@ notify.onclick = () => {
     startChat();
 };
 
-/* 💬 чат */
+/* 💬 НОРМАЛЬНОЕ ПОЗДРАВЛЕНИЕ (расширено) */
 function startChat() {
 
 const msgs = [
-"Лерочка..",
-"Слушай… сегодня твой день",
-"Я просто рад, что ты есть в моей жизни… правда🥰",
-"Ты для меня очень особенная 💖",
-"И я хочу, чтобы ты была счастлива ❤️",
-"Сегодня. И всегда ❤️"
+"Лерочка.. 💙",
+"Слушай… сегодня твой день ✨",
+"Я не буду пытаться сказать что-то идеальное — это не главное 💫",
+"Я просто рад, что ты есть в моей жизни… правда 🥰",
+"Ты очень особенная для меня 💖",
+"Даже если я не всегда это умею нормально показать",
+"Я хочу, чтобы у тебя было больше спокойных дней 🌸",
+"Где тебе легко и хорошо просто так",
+"Чтобы ты чаще улыбалась 💕",
+"И меньше сомневалась в себе",
+"Ты намного лучше, чем думаешь ✨",
+"И если честно… я просто хочу, чтобы ты была счастлива ❤️",
+"Сегодня и всегда 💙"
 ];
 
 let i = 0;
@@ -240,6 +238,7 @@ function next() {
     status.innerText = "печатает…";
 
     setTimeout(() => {
+
         status.innerText = "в сети";
 
         const d = document.createElement("div");
@@ -252,9 +251,9 @@ function next() {
         messages.scrollTop = messages.scrollHeight;
 
         i++;
-        setTimeout(next, 1300);
+        setTimeout(next, 1100);
 
-    }, 1500);
+    }, 1400);
 }
 
 next();
@@ -262,14 +261,8 @@ next();
 
 /* 🎬 финал */
 function finish() {
-    const fade = document.getElementById("fade");
     const gift = document.getElementById("gift");
-
-    fade.classList.add("show");
-
-    setTimeout(() => {
-        gift.classList.add("show");
-    }, 1500);
+    gift.classList.add("show");
 }
 
 /* 🎁 */
