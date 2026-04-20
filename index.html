@@ -1,369 +1,57 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-
-<title>💙</title>
-
-<style>
-html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    background: #0e1621;
-    font-family: Arial, sans-serif;
-    overflow: hidden;
-    color: white;
-}
-
-/* 🎮 игра */
-.game { position:absolute; inset:0; }
-.game-text {
-    position: fixed;
-    top: 50%; left: 50%;
-    transform: translate(-50%,-50%);
-    color:#7aa2c0;
-}
-.score { position:fixed; top:15px; left:15px; }
-
-.drop {
-    position:absolute;
-    font-size:28px;
-    animation: fall linear forwards;
-}
-@keyframes fall {
-    from { transform: translateY(-50px); }
-    to { transform: translateY(110vh); }
-}
-
-/* уведомление */
-.notify {
-    position: fixed;
-    top: -100px;
-    left: 0; right: 0;
-    margin:auto;
-    width: 95%;
-    max-width: 420px;
-    background:#1f1f1f;
-    border-radius:12px;
-    padding:12px;
-    display:flex;
-    gap:10px;
-    align-items:center;
-    transition:0.5s;
-    z-index:20;
-}
-.notify.show { top:10px; }
-
-/* чат */
-.chat {
-    display:none;
-    flex-direction:column;
-    height:100vh;
-}
-.topbar {
-    height:60px;
-    background:#17212b;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    padding:0 15px;
-}
-.title { font-weight:bold; }
-.status { font-size:12px; color:#7aa2c0; }
-
-.messages {
-    flex:1;
-    padding:15px;
-    overflow-y:auto;
-    display:flex;
-    flex-direction:column;
-    align-items:flex-start;
-    padding-bottom:140px;
-}
-
-.msg {
-    background:#2b5278;
-    padding:10px 14px;
-    border-radius:16px;
-    max-width:75%;
-    margin-top:10px;
-    opacity:0;
-    transform:translateY(10px);
-    transition:0.4s;
-}
-.msg.show {
-    opacity:1;
-    transform:translateY(0);
-}
-
-/* fade */
-.fade {
-    position:fixed;
-    inset:0;
-    background:black;
-    opacity:0;
-    transition:1.5s;
-    pointer-events:none;
-    z-index:50;
-}
-.fade.show { opacity:0.85; }
-
-/* подарок */
-.gift {
-    position:fixed;
-    top:50%; left:50%;
-    transform:translate(-50%,-50%);
-    font-size:70px;
-    opacity:0;
-    transition:0.6s;
-    z-index:60;
-    cursor:pointer;
-}
-.gift.show { opacity:1; }
-
-/* 📸 ГАЛЕРЕЯ */
-.scene2 {
-    display:none;
-    position:fixed;
-    inset:0;
-    background:#0b1220;
-    overflow:hidden;
-}
-
-/* сетка */
-.grid {
-    display:grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap:10px;
-    padding:20px;
-}
-
-.card {
-    position:relative;
-    border-radius:14px;
-    overflow:hidden;
-    cursor:pointer;
-}
-
-.card img {
-    width:100%;
-    height:180px;
-    object-fit:cover;
-    transition:0.4s;
-}
-
-/* затемнение */
-.overlay {
-    position:fixed;
-    inset:0;
-    background:black;
-    opacity:0;
-    transition:0.4s;
-    z-index:5;
-    pointer-events:none;
-}
-
-/* активная фотка */
-.active {
-    position:fixed;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    width:85%;
-    max-width:350px;
-    z-index:10;
-    border-radius:16px;
-}
-
-.text {
-    position:fixed;
-    bottom:80px;
-    left:50%;
-    transform:translateX(-50%);
-    text-align:center;
-    color:#cfe0ff;
-    z-index:10;
-    opacity:0;
-    transition:0.4s;
-}
-
-/* цветочек */
-.next {
-    position:fixed;
-    bottom:25px;
-    left:50%;
-    transform:translateX(-50%);
-    font-size:28px;
-    opacity:0;
-    cursor:pointer;
-    z-index:10;
-}
-</style>
-</head>
-
-<body>
-
-<!-- игра -->
-<div class="score">💖: <span id="score">0</span></div>
-<div class="game" id="game"></div>
-<div class="game-text">лови сердечки 💖</div>
-
-<!-- уведомление -->
-<div class="notify" id="notify">Telegram — новое сообщение 💌</div>
-
-<!-- чат -->
-<div class="chat" id="chat">
-    <div class="topbar">
-        <div class="title">Darling❤️</div>
-        <div class="status" id="status">в сети</div>
-    </div>
-    <div class="messages" id="messages"></div>
-</div>
-
-<div class="fade" id="fade"></div>
-<div class="gift" id="gift">🎁</div>
-
-<!-- галерея -->
-<div class="scene2" id="scene2">
-
-    <div class="grid" id="grid">
-
-        <div class="card"><img src="photo1.jpg"></div>
-        <div class="card"><img src="photo2.jpg"></div>
-        <div class="card"><img src="photo3.jpg"></div>
-        <div class="card"><img src="photo4.jpg"></div>
-        <div class="card"><img src="photo5.jpg"></div>
-
-    </div>
-
-    <div class="overlay" id="overlay"></div>
-
-    <img id="big" class="active" style="display:none;">
-    <div class="text" id="text"></div>
-    <div class="next" id="next">🌸</div>
-
-</div>
-
 <script>
 
-/* игра */
-let score=0;
-const game=document.getElementById("game");
+/* блокировка состояния */
+let locked = false;
+
+/* 🎮 игра */
+let score = 0;
+const game = document.getElementById("game");
 
 function drop(){
-const el=document.createElement("div");
-el.className="drop";
-el.innerText="💖";
-el.style.left=Math.random()*100+"vw";
-el.style.animationDuration=(3+Math.random()*3)+"s";
-el.onclick=()=>{score++;document.getElementById("score").innerText=score;el.remove();}
-game.appendChild(el);
-setTimeout(()=>el.remove(),6000);
+    if(locked) return;
+
+    const el = document.createElement("div");
+    el.className = "drop";
+    el.innerText = "💖";
+
+    el.style.left = Math.random()*100+"vw";
+    el.style.animationDuration = (3+Math.random()*3)+"s";
+
+    el.onclick = (e)=>{
+        e.stopPropagation(); // 💥 ВАЖНО: не даём клику “пройти дальше”
+        score++;
+        document.getElementById("score").innerText = score;
+        el.remove();
+    };
+
+    game.appendChild(el);
+    setTimeout(()=>el.remove(),6000);
 }
+
 setInterval(drop,700);
 
-/* уведомление */
-setTimeout(()=>notify.classList.add("show"),10000);
-
-/* открыть чат */
-notify.onclick=()=>{
-game.remove();
-document.querySelector(".game-text").remove();
-document.querySelector(".score").remove();
-notify.remove();
-chat.style.display="flex";
-send();
-};
-
-/* чат */
-const msgs=[
-"Лерочка..",
-"Слушай… сегодня твой день",
-"Я просто рад, что ты есть в моей жизни… правда🥰",
-"Ты для меня очень особенная 💖",
-"И я хочу, чтобы ты была счастлива ❤️",
-"Сегодня. И всегда ❤️"
-];
-
-let i=0;
-function send(){
-if(i>=msgs.length){finish();return;}
-status.innerText="печатает…";
+/* 📩 уведомление */
 setTimeout(()=>{
-status.innerText="в сети";
-let d=document.createElement("div");
-d.className="msg";
-d.innerText=msgs[i];
-messages.appendChild(d);
-setTimeout(()=>d.classList.add("show"),50);
-messages.scrollTop=messages.scrollHeight;
-i++;
-setTimeout(send,1400);
-},1700);
-}
+    document.getElementById("notify").classList.add("show");
+},10000);
 
-/* финал */
-function finish(){
-fade.classList.add("show");
-setTimeout(()=>{
-gift.classList.add("show");
-},1500);
-}
+/* 💥 ОТКРЫТИЕ ТОЛЬКО ОТСЮДА */
+document.getElementById("notify").onclick = (e)=>{
+    e.stopPropagation();
 
-/* подарок */
-gift.onclick=()=>{
-gift.remove();
-fade.remove();
-chat.style.display="none";
-scene2.style.display="block";
-};
+    if(locked) return;
+    locked = true; // 🚫 блокируем игру полностью
 
-/* галерея логика */
-let photos=[...document.querySelectorAll(".card")];
-let big=document.getElementById("big");
-let overlay=document.getElementById("overlay");
-let text=document.getElementById("text");
-let next=document.getElementById("next");
+    game.style.pointerEvents = "none";
+    game.style.opacity = "0";
 
-let captions=[
-"ты очень красивая 💙",
-"мне нравится твоя улыбка 🫶",
-"с тобой спокойно 🌸",
-"ты делаешь лучше всё вокруг ✨",
-"и я рядом ❤️"
-];
+    document.querySelector(".game-text").style.display = "none";
+    document.querySelector(".score").style.display = "none";
 
-let current=0;
+    document.getElementById("notify").style.display = "none";
+    document.getElementById("chat").style.display = "flex";
 
-photos.forEach((p,idx)=>{
-p.onclick=()=>{
-big.src=p.querySelector("img").src;
-big.style.display="block";
-overlay.style.opacity="0.7";
-text.style.opacity="1";
-text.innerText=captions[idx];
-next.style.opacity="1";
-current=idx;
-}
-});
-
-next.onclick=()=>{
-current++;
-if(current>=photos.length)return;
-big.src=photos[current].querySelector("img").src;
-text.innerText=captions[current];
-}
-
-overlay.onclick=()=>{
-overlay.style.opacity="0";
-big.style.display="none";
-text.style.opacity="0";
-next.style.opacity="0";
+    sendMessages();
 };
 
 </script>
-
-</body>
-</html>
