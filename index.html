@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>💙</title>
 
@@ -12,16 +12,15 @@ html, body {
     padding: 0;
     height: 100%;
     background: #0e1621;
-    font-family: Arial, sans-serif;
+    font-family: Arial;
     overflow: hidden;
     color: white;
 }
 
-/* 🎮 ИГРА */
+/* 🎮 игра */
 .game {
     position: fixed;
     inset: 0;
-    z-index: 1;
 }
 
 .game-text {
@@ -30,15 +29,13 @@ html, body {
     left: 50%;
     transform: translate(-50%, -50%);
     color: #7aa2c0;
-    z-index: 1;
-    pointer-events: none; /* 💥 ВАЖНО */
+    pointer-events: none;
 }
 
 .score {
     position: fixed;
     top: 15px;
     left: 15px;
-    z-index: 1;
     pointer-events: none;
 }
 
@@ -62,29 +59,20 @@ html, body {
     margin: auto;
     width: 90%;
     max-width: 420px;
-
     background: #1f1f1f;
     border-radius: 12px;
     padding: 12px;
-
-    display: flex;
-    align-items: center;
-    gap: 10px;
-
     transition: 0.5s;
-    z-index: 999; /* 💥 САМЫЙ ВЫСОКИЙ */
+    z-index: 999;
 }
 
-.notify.show {
-    top: 10px;
-}
+.notify.show { top: 10px; }
 
 /* 💬 чат */
 .chat {
     display: none;
     flex-direction: column;
     height: 100vh;
-    z-index: 2;
 }
 
 .topbar {
@@ -114,7 +102,6 @@ html, body {
     border-radius: 16px;
     max-width: 75%;
     margin-top: 10px;
-
     opacity: 0;
     transform: translateY(10px);
     transition: 0.4s;
@@ -133,12 +120,9 @@ html, body {
     opacity: 0;
     transition: 1.5s;
     z-index: 50;
-    pointer-events: none;
 }
 
-.fade.show {
-    opacity: 0.85;
-}
+.fade.show { opacity: 0.85; }
 
 /* 🎁 */
 .gift {
@@ -153,45 +137,76 @@ html, body {
     cursor: pointer;
 }
 
-.gift.show {
-    opacity: 1;
+.gift.show { opacity: 1; }
+
+/* 📸 сцена 2 */
+.scene2 {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #0b1220;
+    overflow: auto;
+    padding: 20px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.grid img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 14px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- 🎮 -->
+<!-- игра -->
 <div class="score">💖: <span id="score">0</span></div>
 <div class="game" id="game"></div>
 <div class="game-text">нажимай на сердечки 💖</div>
 
-<!-- 📩 -->
+<!-- уведомление -->
 <div class="notify" id="notify">Telegram — новое сообщение 💌</div>
 
-<!-- 💬 -->
+<!-- чат -->
 <div class="chat" id="chat">
     <div class="topbar">
         <div class="title">Darling❤️</div>
         <div class="status" id="status">в сети</div>
     </div>
-
     <div class="messages" id="messages"></div>
 </div>
 
 <div class="fade" id="fade"></div>
 <div class="gift" id="gift">🎁</div>
 
+<!-- сцена 2 -->
+<div class="scene2" id="scene2">
+    <div class="grid">
+        <img src="photo1.jpg">
+        <img src="photo2.jpg">
+        <img src="photo3.jpg">
+        <img src="photo4.jpg">
+        <img src="photo5.jpg">
+    </div>
+</div>
+
 <script>
 
-document.addEventListener("DOMContentLoaded", () => {
-
-/* 🔒 защита */
 let locked = false;
 let score = 0;
 
 const game = document.getElementById("game");
 const notify = document.getElementById("notify");
+const chat = document.getElementById("chat");
+const messages = document.getElementById("messages");
+const status = document.getElementById("status");
 
 /* 🎮 игра */
 function spawn() {
@@ -224,27 +239,24 @@ setTimeout(() => {
     notify.classList.add("show");
 }, 10000);
 
-/* 💥 ЕДИНСТВЕННЫЙ ПЕРЕХОД */
-notify.onclick = (e) => {
-    e.stopPropagation();
-
+/* 💥 старт */
+notify.onclick = () => {
     if (locked) return;
     locked = true;
 
-    game.style.pointerEvents = "none";
-    game.style.opacity = "0";
-
+    game.style.display = "none";
     document.querySelector(".game-text").style.display = "none";
     document.querySelector(".score").style.display = "none";
-
     notify.style.display = "none";
 
-    document.getElementById("chat").style.display = "flex";
+    chat.style.display = "flex";
 
-    sendMessages();
+    startChat();
 };
 
 /* 💬 чат */
+function startChat() {
+
 const msgs = [
 "Лерочка..",
 "Слушай… сегодня твой день",
@@ -255,19 +267,13 @@ const msgs = [
 ];
 
 let i = 0;
-const status = document.getElementById("status");
-const messages = document.getElementById("messages");
 
-function send() {
-    if (i >= msgs.length) {
-        finish();
-        return;
-    }
+function next() {
+    if (i >= msgs.length) return finish();
 
     status.innerText = "печатает…";
 
     setTimeout(() => {
-
         status.innerText = "в сети";
 
         const d = document.createElement("div");
@@ -280,12 +286,15 @@ function send() {
         messages.scrollTop = messages.scrollHeight;
 
         i++;
-        setTimeout(send, 1300);
+        setTimeout(next, 1300);
 
-    }, 1600);
+    }, 1500);
 }
 
-/* финал */
+next();
+}
+
+/* 🎬 финал */
 function finish() {
     const fade = document.getElementById("fade");
     const gift = document.getElementById("gift");
@@ -299,13 +308,9 @@ function finish() {
 
 /* 🎁 */
 document.getElementById("gift").onclick = () => {
-    document.getElementById("chat").style.display = "none";
-    alert("вторая часть готова 💙");
+    chat.style.display = "none";
+    document.getElementById("scene2").style.display = "block";
 };
-
-send = send;
-
-});
 
 </script>
 
