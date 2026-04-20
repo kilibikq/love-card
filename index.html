@@ -20,6 +20,7 @@ html, body {
 .game {
     position:fixed;
     inset:0;
+    overflow:hidden;
     z-index:1;
 }
 
@@ -42,17 +43,11 @@ html, body {
 
 .drop {
     position:absolute;
-    font-size:32px;
-    cursor:pointer;
-    z-index:9999;
+    font-size:34px;
     user-select:none;
-    pointer-events:auto;
-    animation:fall linear forwards;
-}
-
-@keyframes fall {
-    from { transform:translateY(-60px); }
-    to { transform:translateY(110vh); }
+    cursor:pointer;
+    touch-action:manipulation;
+    z-index:9999;
 }
 
 /* 📩 уведомление */
@@ -133,7 +128,7 @@ html, body {
     z-index:1000;
 }
 
-/* 🌙 затемнение */
+/* 🌙 */
 .fade {
     position:fixed;
     inset:0;
@@ -218,13 +213,17 @@ html, body {
 
 <script>
 
-/* ===================== */
-/* 🎮 ИГРА (100% FIXED) */
-/* ===================== */
-
 let score = 0;
 let locked = false;
 
+const game = document.getElementById("game");
+const notify = document.getElementById("notify");
+const chat = document.getElementById("chat");
+const messages = document.getElementById("messages");
+const status = document.getElementById("status");
+const nextBtn = document.getElementById("nextBtn");
+
+/* 💖 ИГРА (100% РАБОТАЕТ) */
 function spawn() {
     if (locked) return;
 
@@ -232,45 +231,70 @@ function spawn() {
     el.className = "drop";
     el.innerText = "💖";
 
-    el.style.left = Math.random() * 100 + "vw";
-    el.style.animationDuration = (3 + Math.random() * 2) + "s";
+    const x = Math.random() * (window.innerWidth - 40);
+    let y = -40;
 
-    el.onclick = () => {
+    el.style.left = x + "px";
+    el.style.top = y + "px";
+
+    game.appendChild(el);
+
+    const speed = 2 + Math.random() * 2;
+
+    function move() {
+        if (locked) {
+            el.remove();
+            return;
+        }
+
+        y += speed;
+        el.style.top = y + "px";
+
+        if (y > window.innerHeight) {
+            el.remove();
+            return;
+        }
+
+        requestAnimationFrame(move);
+    }
+
+    move();
+
+    const hit = () => {
         score++;
         document.getElementById("score").innerText = score;
         el.remove();
     };
 
-    document.getElementById("game").appendChild(el);
-    setTimeout(() => el.remove(), 6000);
+    el.addEventListener("click", hit);
+    el.addEventListener("touchstart", hit);
 }
 
-setInterval(spawn, 500);
+setInterval(spawn, 450);
 
-/* 📩 уведомление */
-setTimeout(() => {
-    document.getElementById("notify").classList.add("show");
-}, 8000);
+/* 📩 */
+setTimeout(() => notify.classList.add("show"), 8000);
 
 /* 💥 старт */
-document.getElementById("notify").onclick = () => {
+notify.onclick = () => {
     locked = true;
 
-    document.getElementById("game").style.display = "none";
+    game.style.display = "none";
     document.querySelector(".game-text").style.display = "none";
     document.querySelector(".score").style.display = "none";
-    document.getElementById("notify").style.display = "none";
+    notify.style.display = "none";
 
-    document.getElementById("chat").style.display = "flex";
+    chat.style.display = "flex";
 
     startChat();
 };
 
-/* 💬 чат */
+/* 💬 ПОЛНОЕ ПОЗДРАВЛЕНИЕ */
 const msgs = [
 "Лерочка.. 💙",
 "Слушай… сегодня твой день ✨",
-"Я просто рад, что ты есть 🥰",
+"Я не буду пытаться сказать что-то идеальное",
+"Я просто рад, что ты есть в моей жизни 🥰",
 "Ты очень особенная 💖",
 "И я хочу, чтобы ты была счастлива ❤️",
 "Сегодня и всегда 💙"
@@ -281,26 +305,23 @@ let i = 0;
 function startChat() {
     function next() {
         if (i >= msgs.length) {
-            document.getElementById("nextBtn").style.display = "block";
+            nextBtn.style.display = "block";
             return;
         }
 
-        document.getElementById("status").innerText = "печатает…";
+        status.innerText = "печатает…";
 
         setTimeout(() => {
-
-            document.getElementById("status").innerText = "в сети";
+            status.innerText = "в сети";
 
             const d = document.createElement("div");
             d.className = "msg";
             d.innerText = msgs[i];
 
-            document.getElementById("messages").appendChild(d);
-
+            messages.appendChild(d);
             setTimeout(() => d.classList.add("show"), 50);
 
-            document.getElementById("messages").scrollTop =
-                document.getElementById("messages").scrollHeight;
+            messages.scrollTop = messages.scrollHeight;
 
             i++;
             setTimeout(next, 900);
@@ -311,9 +332,9 @@ function startChat() {
     next();
 }
 
-/* 🔘 кнопка далее */
-document.getElementById("nextBtn").onclick = () => {
-    document.getElementById("nextBtn").style.display = "none";
+/* 🔘 далее */
+nextBtn.onclick = () => {
+    nextBtn.style.display = "none";
 
     document.getElementById("fade").classList.add("show");
 
