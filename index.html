@@ -1,57 +1,311 @@
-<script>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-/* блокировка состояния */
-let locked = false;
+<title>💙</title>
+
+<style>
+html, body {
+    margin:0;
+    padding:0;
+    height:100%;
+    background:#0e1621;
+    font-family:Arial;
+    overflow:hidden;
+    color:white;
+}
 
 /* 🎮 игра */
-let score = 0;
-const game = document.getElementById("game");
+.game {
+    position:absolute;
+    inset:0;
+}
+
+.game-text {
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    color:#7aa2c0;
+}
+
+.score {
+    position:fixed;
+    top:15px;
+    left:15px;
+    z-index:5;
+}
+
+.drop {
+    position:absolute;
+    font-size:28px;
+    animation:fall linear forwards;
+}
+
+@keyframes fall {
+    from {transform:translateY(-50px);}
+    to {transform:translateY(110vh);}
+}
+
+/* 📩 уведомление */
+.notify {
+    position:fixed;
+    top:-100px;
+    left:0;
+    right:0;
+    margin:auto;
+    width:90%;
+    max-width:420px;
+    background:#1f1f1f;
+    border-radius:12px;
+    padding:12px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    transition:0.5s;
+    z-index:20;
+}
+
+.notify.show { top:10px; }
+
+/* 💬 чат */
+.chat {
+    display:none;
+    flex-direction:column;
+    height:100vh;
+}
+
+.topbar {
+    height:60px;
+    background:#17212b;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding:0 15px;
+}
+
+.title {font-weight:bold;}
+.status {font-size:12px;color:#7aa2c0;}
+
+.messages {
+    flex:1;
+    padding:15px;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+}
+
+.msg {
+    background:#2b5278;
+    padding:10px 14px;
+    border-radius:16px;
+    max-width:75%;
+    margin-top:10px;
+    opacity:0;
+    transform:translateY(10px);
+    transition:0.4s;
+}
+
+.msg.show {
+    opacity:1;
+    transform:translateY(0);
+}
+
+/* 🎬 fade */
+.fade {
+    position:fixed;
+    inset:0;
+    background:black;
+    opacity:0;
+    transition:1.5s;
+    z-index:50;
+    pointer-events:none;
+}
+
+.fade.show {opacity:0.85;}
+
+/* 🎁 */
+.gift {
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    font-size:70px;
+    opacity:0;
+    transition:0.6s;
+    z-index:60;
+    cursor:pointer;
+}
+
+.gift.show {opacity:1;}
+
+/* 📸 сцена 2 */
+.scene2 {
+    display:none;
+    position:fixed;
+    inset:0;
+    background:#0b1220;
+    overflow:auto;
+    padding:20px;
+}
+
+.grid {
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+}
+
+.card img {
+    width:100%;
+    height:180px;
+    object-fit:cover;
+    border-radius:14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="score">💖: <span id="score">0</span></div>
+<div class="game" id="game"></div>
+<div class="game-text">лови сердечки 💖</div>
+
+<div class="notify" id="notify">Telegram — новое сообщение 💌</div>
+
+<div class="chat" id="chat">
+    <div class="topbar">
+        <div class="title">Darling❤️</div>
+        <div class="status" id="status">в сети</div>
+    </div>
+    <div class="messages" id="messages"></div>
+</div>
+
+<div class="fade" id="fade"></div>
+<div class="gift" id="gift">🎁</div>
+
+<div class="scene2" id="scene2">
+    <div class="grid">
+        <div class="card"><img src="photo1.jpg"></div>
+        <div class="card"><img src="photo2.jpg"></div>
+        <div class="card"><img src="photo3.jpg"></div>
+        <div class="card"><img src="photo4.jpg"></div>
+        <div class="card"><img src="photo5.jpg"></div>
+    </div>
+</div>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", () => {
+
+let locked=false;
+let score=0;
+
+const game=document.getElementById("game");
+const notify=document.getElementById("notify");
 
 function drop(){
-    if(locked) return;
+if(locked) return;
 
-    const el = document.createElement("div");
-    el.className = "drop";
-    el.innerText = "💖";
+const el=document.createElement("div");
+el.className="drop";
+el.innerText="💖";
 
-    el.style.left = Math.random()*100+"vw";
-    el.style.animationDuration = (3+Math.random()*3)+"s";
+el.style.left=Math.random()*100+"vw";
+el.style.animationDuration=(3+Math.random()*3)+"s";
 
-    el.onclick = (e)=>{
-        e.stopPropagation(); // 💥 ВАЖНО: не даём клику “пройти дальше”
-        score++;
-        document.getElementById("score").innerText = score;
-        el.remove();
-    };
+el.onclick=(e)=>{
+e.stopPropagation();
+if(locked) return;
+score++;
+document.getElementById("score").innerText=score;
+el.remove();
+};
 
-    game.appendChild(el);
-    setTimeout(()=>el.remove(),6000);
+game.appendChild(el);
+setTimeout(()=>el.remove(),6000);
 }
 
 setInterval(drop,700);
 
-/* 📩 уведомление */
-setTimeout(()=>{
-    document.getElementById("notify").classList.add("show");
-},10000);
+/* уведомление */
+setTimeout(()=>notify.classList.add("show"),10000);
 
-/* 💥 ОТКРЫТИЕ ТОЛЬКО ОТСЮДА */
-document.getElementById("notify").onclick = (e)=>{
-    e.stopPropagation();
+/* старт */
+notify.onclick=()=>{
+if(locked) return;
+locked=true;
 
-    if(locked) return;
-    locked = true; // 🚫 блокируем игру полностью
+game.style.display="none";
+document.querySelector(".game-text").style.display="none";
+document.querySelector(".score").style.display="none";
 
-    game.style.pointerEvents = "none";
-    game.style.opacity = "0";
+notify.style.display="none";
+document.getElementById("chat").style.display="flex";
 
-    document.querySelector(".game-text").style.display = "none";
-    document.querySelector(".score").style.display = "none";
-
-    document.getElementById("notify").style.display = "none";
-    document.getElementById("chat").style.display = "flex";
-
-    sendMessages();
+send();
 };
 
+/* чат */
+const msgs=[
+"Лерочка..",
+"Слушай… сегодня твой день",
+"Я просто рад, что ты есть в моей жизни… правда🥰",
+"Ты для меня очень особенная 💖",
+"И я хочу, чтобы ты была счастлива ❤️",
+"Сегодня. И всегда ❤️"
+];
+
+let i=0;
+const status=document.getElementById("status");
+const messages=document.getElementById("messages");
+
+function send(){
+if(i>=msgs.length){finish();return;}
+
+status.innerText="печатает…";
+
+setTimeout(()=>{
+
+status.innerText="в сети";
+
+const d=document.createElement("div");
+d.className="msg";
+d.innerText=msgs[i];
+
+messages.appendChild(d);
+setTimeout(()=>d.classList.add("show"),50);
+
+messages.scrollTop=messages.scrollHeight;
+
+i++;
+setTimeout(send,1400);
+
+},1700);
+}
+
+/* финал */
+function finish(){
+const fade=document.getElementById("fade");
+const gift=document.getElementById("gift");
+
+fade.classList.add("show");
+
+setTimeout(()=>{
+gift.classList.add("show");
+},1500);
+}
+
+document.getElementById("gift").onclick=()=>{
+document.getElementById("chat").style.display="none";
+document.getElementById("scene2").style.display="block";
+};
+
+});
+
 </script>
+
+</body>
+</html>
