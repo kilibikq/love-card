@@ -138,43 +138,20 @@ html, body {
 }
 
 .gift.show { opacity: 1; }
-
-/* 📸 сцена 2 */
-.scene2 {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: #0b1220;
-    overflow: auto;
-    padding: 20px;
-}
-
-.grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-}
-
-.grid img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    border-radius: 14px;
-}
 </style>
 </head>
 
 <body>
 
-<!-- игра -->
+<!-- 🎮 -->
 <div class="score">💖: <span id="score">0</span></div>
 <div class="game" id="game"></div>
 <div class="game-text">нажимай на сердечки 💖</div>
 
-<!-- уведомление -->
+<!-- 📩 -->
 <div class="notify" id="notify">Telegram — новое сообщение 💌</div>
 
-<!-- чат -->
+<!-- 💬 -->
 <div class="chat" id="chat">
     <div class="topbar">
         <div class="title">Darling❤️</div>
@@ -185,17 +162,6 @@ html, body {
 
 <div class="fade" id="fade"></div>
 <div class="gift" id="gift">🎁</div>
-
-<!-- сцена 2 -->
-<div class="scene2" id="scene2">
-    <div class="grid">
-        <img src="photo1.jpg">
-        <img src="photo2.jpg">
-        <img src="photo3.jpg">
-        <img src="photo4.jpg">
-        <img src="photo5.jpg">
-    </div>
-</div>
 
 <script>
 
@@ -309,7 +275,6 @@ function finish() {
 /* 🎁 */
 document.getElementById("gift").onclick = () => {
     chat.style.display = "none";
-    document.getElementById("scene2").style.display = "block";
 };
 
 </script>
