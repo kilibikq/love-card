@@ -8,169 +8,184 @@
 
 <style>
 html, body {
-    margin: 0;
-    height: 100%;
-    background: #0e1621;
-    font-family: Arial;
-    overflow: hidden;
-    color: white;
+    margin:0;
+    height:100%;
+    background:#0e1621;
+    font-family:Arial;
+    overflow:hidden;
+    color:white;
 }
 
 /* 🎮 игра */
 .game {
-    position: fixed;
-    inset: 0;
+    position:fixed;
+    inset:0;
 }
 
 .game-text {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: #7aa2c0;
-    pointer-events: none;
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    color:#7aa2c0;
+    pointer-events:none;
 }
 
 .score {
-    position: fixed;
-    top: 15px;
-    left: 15px;
-    pointer-events: none;
+    position:fixed;
+    top:15px;
+    left:15px;
+    pointer-events:none;
 }
 
+/* 💖 */
 .drop {
-    position: absolute;
-    font-size: 30px;
-    cursor: pointer;
-    animation: fall linear forwards;
+    position:absolute;
+    font-size:28px;
+    animation:fall linear forwards;
 }
 
 @keyframes fall {
-    from { transform: translateY(-50px); }
-    to { transform: translateY(110vh); }
+    from { transform:translateY(-50px); }
+    to { transform:translateY(110vh); }
 }
 
-/* 📩 уведомление */
+/* 📩 */
 .notify {
-    position: fixed;
-    top: -100px;
-    left: 0;
-    right: 0;
-    margin: auto;
-    width: 90%;
-    max-width: 420px;
-    background: #1f1f1f;
-    border-radius: 12px;
-    padding: 12px;
-    transition: 0.5s;
-    z-index: 999;
+    position:fixed;
+    top:-100px;
+    left:0;
+    right:0;
+    margin:auto;
+    width:90%;
+    max-width:420px;
+    background:#1f1f1f;
+    border-radius:12px;
+    padding:12px;
+    transition:0.5s;
+    z-index:999;
 }
 
-.notify.show { top: 10px; }
+.notify.show { top:10px; }
 
 /* 💬 чат */
 .chat {
-    display: none;
-    flex-direction: column;
-    height: 100vh;
+    display:none;
+    flex-direction:column;
+    height:100vh;
+    transition:1s;
 }
 
 .topbar {
-    height: 60px;
-    background: #17212b;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 0 15px;
+    height:60px;
+    background:#17212b;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding:0 15px;
 }
 
-.title { font-weight: bold; }
-.status { font-size: 12px; color: #7aa2c0; }
+.title { font-weight:bold; }
+.status { font-size:12px; color:#7aa2c0; }
 
 .messages {
-    flex: 1;
-    padding: 15px;
-    padding-bottom: 80px; /* 💥 фикс телефона */
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
+    flex:1;
+    padding:15px;
+    padding-bottom:90px;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
 }
 
 .msg {
-    background: #2b5278;
-    padding: 10px 14px;
-    border-radius: 16px;
-    max-width: 80%;
-    margin-top: 10px;
-    opacity: 0;
-    transform: translateY(10px);
-    transition: 0.4s;
+    background:#2b5278;
+    padding:8px 12px;
+    border-radius:14px;
+    max-width:70%;
+    font-size:14px;
+    margin-top:8px;
+    opacity:0;
+    transform:translateY(8px);
+    transition:0.35s;
 }
 
 .msg.show {
-    opacity: 1;
-    transform: translateY(0);
+    opacity:1;
+    transform:translateY(0);
 }
 
-/* 💙 финал */
+/* 🌙 cinematic fade */
+.fade {
+    position:fixed;
+    inset:0;
+    background:black;
+    opacity:0;
+    transition:1.8s;
+    z-index:50;
+}
+
+.fade.show {
+    opacity:0.95;
+}
+
+/* 🎬 финал сцена */
 .final {
-    position: fixed;
-    inset: 0;
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background: rgba(0,0,0,0.9);
-    text-align: center;
+    position:fixed;
+    inset:0;
+    display:none;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    background:black;
+    z-index:60;
+    transform:scale(1.05);
+    transition:2s;
 }
 
-.final-heart {
-    font-size: 80px;
-    animation: pulse 1.2s infinite;
-}
-
-.final-top {
-    position: absolute;
-    top: 25%;
-    font-size: 22px;
-    opacity: 0;
-    transform: translateY(-10px);
-    transition: 1s;
-}
-
-.final-bottom {
-    position: absolute;
-    bottom: 25%;
-    font-size: 22px;
-    opacity: 0;
-    transform: translateY(10px);
-    transition: 1s;
-}
-
-.show {
-    opacity: 1 !important;
-    transform: translateY(0) !important;
+/* 💔 heartbeat */
+.heart {
+    font-size:90px;
+    opacity:0;
+    transform:scale(0.6);
+    transition:1.2s;
+    animation:pulse 1.2s infinite;
 }
 
 @keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.2); }
-    100% { transform: scale(1); }
+    0% { transform:scale(1); }
+    50% { transform:scale(1.15); }
+    100% { transform:scale(1); }
+}
+
+.text {
+    position:absolute;
+    font-size:22px;
+    opacity:0;
+    transition:1.2s;
+    text-align:center;
+}
+
+.top { top:25%; }
+.bottom { bottom:25%; }
+
+.show {
+    opacity:1 !important;
+    transform:translateY(0) scale(1) !important;
 }
 </style>
 </head>
 
 <body>
 
-<!-- игра -->
+<!-- 🎮 -->
 <div class="score">💖: <span id="score">0</span></div>
 <div class="game" id="game"></div>
 <div class="game-text">нажимай на сердечки 💖</div>
 
-<!-- уведомление -->
+<!-- 📩 -->
 <div class="notify" id="notify">Telegram — новое сообщение 💌</div>
 
-<!-- чат -->
+<!-- 💬 -->
 <div class="chat" id="chat">
     <div class="topbar">
         <div class="title">Darling❤️</div>
@@ -179,128 +194,142 @@ html, body {
     <div class="messages" id="messages"></div>
 </div>
 
-<!-- финал -->
+<!-- 🌙 -->
+<div class="fade" id="fade"></div>
+
+<!-- 🎬 финал -->
 <div class="final" id="final">
-    <div class="final-top" id="top">С днём рождения</div>
-    <div class="final-heart">❤️</div>
-    <div class="final-bottom" id="bottom">Любимая</div>
+    <div class="text top" id="top">С днём рождения</div>
+    <div class="heart" id="heart">❤️</div>
+    <div class="text bottom" id="bottom">Любимая</div>
 </div>
 
 <script>
 
-let locked = false;
-let score = 0;
+let locked=false;
+let score=0;
 
-const game = document.getElementById("game");
-const notify = document.getElementById("notify");
-const chat = document.getElementById("chat");
-const messages = document.getElementById("messages");
-const status = document.getElementById("status");
+const game=document.getElementById("game");
+const notify=document.getElementById("notify");
+const chat=document.getElementById("chat");
+const messages=document.getElementById("messages");
+const status=document.getElementById("status");
 
 /* 🎮 игра */
-function spawn() {
-    if (locked) return;
+function spawn(){
+if(locked) return;
 
-    const el = document.createElement("div");
-    el.className = "drop";
-    el.innerText = "💖";
+const el=document.createElement("div");
+el.className="drop";
+el.innerText="💖";
 
-    el.style.left = Math.random() * 100 + "vw";
-    el.style.animationDuration = (3 + Math.random() * 2) + "s";
+el.style.left=Math.random()*100+"vw";
+el.style.animationDuration=(3+Math.random()*2)+"s";
 
-    el.onclick = (e) => {
-        e.stopPropagation();
-        if (locked) return;
+el.onclick=(e)=>{
+e.stopPropagation();
+if(locked) return;
 
-        score++;
-        document.getElementById("score").innerText = score;
-        el.remove();
-    };
+score++;
+document.getElementById("score").innerText=score;
+el.remove();
+};
 
-    game.appendChild(el);
-    setTimeout(() => el.remove(), 6000);
+game.appendChild(el);
+setTimeout(()=>el.remove(),6000);
 }
 
-setInterval(spawn, 650);
+setInterval(spawn,650);
 
 /* 📩 уведомление */
-setTimeout(() => {
-    notify.classList.add("show");
-}, 8000);
+setTimeout(()=>notify.classList.add("show"),8000);
 
 /* 💥 старт */
-notify.onclick = () => {
-    if (locked) return;
-    locked = true;
+notify.onclick=()=>{
+if(locked) return;
+locked=true;
 
-    game.style.display = "none";
-    document.querySelector(".game-text").style.display = "none";
-    document.querySelector(".score").style.display = "none";
-    notify.style.display = "none";
+game.style.opacity="0";
+game.style.pointerEvents="none";
 
-    chat.style.display = "flex";
+document.querySelector(".game-text").style.opacity="0";
+document.querySelector(".score").style.opacity="0";
 
-    startChat();
+notify.style.display="none";
+chat.style.display="flex";
+
+startChat();
 };
 
 /* 💬 чат */
-function startChat() {
+function startChat(){
 
-const msgs = [
+const msgs=[
 "Лерочка..",
-"Слушай… сегодня твой день ✨",
-"Я просто рад, что ты есть в моей жизни 🥰",
+"Сегодня твой день ✨",
+"Я просто рад, что ты есть 🥰",
 "Ты очень особенная 💖",
 "И я хочу, чтобы ты была счастлива ❤️",
 "Сегодня и всегда 💙"
 ];
 
-let i = 0;
+let i=0;
 
-function next() {
-    if (i >= msgs.length) return finish();
+function next(){
+if(i>=msgs.length) return finish();
 
-    status.innerText = "печатает…";
+status.innerText="печатает…";
 
-    setTimeout(() => {
+setTimeout(()=>{
 
-        status.innerText = "в сети";
+status.innerText="в сети";
 
-        const d = document.createElement("div");
-        d.className = "msg";
-        d.innerText = msgs[i];
+const d=document.createElement("div");
+d.className="msg";
+d.innerText=msgs[i];
 
-        messages.appendChild(d);
-        setTimeout(() => d.classList.add("show"), 50);
+messages.appendChild(d);
+setTimeout(()=>d.classList.add("show"),50);
 
-        messages.scrollTop = messages.scrollHeight;
+messages.scrollTop=messages.scrollHeight;
 
-        i++;
-        setTimeout(next, 1100);
+i++;
+setTimeout(next,1000);
 
-    }, 1400);
+},1400);
 }
 
 next();
 }
 
-/* 🎬 финал */
-function finish() {
-    chat.style.display = "none";
+/* 🎬 CINEMA FINISH */
+function finish(){
 
-    const f = document.getElementById("final");
-    const t = document.getElementById("top");
-    const b = document.getElementById("bottom");
+const fade=document.getElementById("fade");
+const final=document.getElementById("final");
+const heart=document.getElementById("heart");
+const top=document.getElementById("top");
+const bottom=document.getElementById("bottom");
 
-    f.style.display = "flex";
+chat.style.opacity="0";
 
-    setTimeout(() => {
-        t.classList.add("show");
-    }, 600);
+setTimeout(()=>fade.classList.add("show"),600);
 
-    setTimeout(() => {
-        b.classList.add("show");
-    }, 1400);
+setTimeout(()=>{
+final.style.display="flex";
+},1800);
+
+setTimeout(()=>{
+heart.classList.add("show");
+},2600);
+
+setTimeout(()=>{
+top.classList.add("show");
+},3200);
+
+setTimeout(()=>{
+bottom.classList.add("show");
+},3800);
 }
 
 </script>
