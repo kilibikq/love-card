@@ -17,34 +17,6 @@ html, body {
     color: white;
 }
 
-/* 🎮 мини-игра */
-.game {
-    position: absolute;
-    inset: 0;
-}
-
-.score {
-    position: fixed;
-    top: 15px;
-    left: 15px;
-    font-size: 16px;
-    z-index: 5;
-}
-
-/* сердечки */
-.drop {
-    position: absolute;
-    font-size: 28px;
-    cursor: pointer;
-    user-select: none;
-    animation: fall linear forwards;
-}
-
-@keyframes fall {
-    from { transform: translateY(-50px); }
-    to { transform: translateY(110vh); }
-}
-
 /* уведомление */
 .notify {
     position: fixed;
@@ -57,9 +29,8 @@ html, body {
     opacity: 0;
     transition: 0.4s;
     cursor: pointer;
-    z-index: 20;
+    z-index: 10;
 }
-
 .notify.show { opacity: 1; }
 
 /* чат */
@@ -80,7 +51,11 @@ html, body {
 }
 
 .title { font-weight: bold; }
-.status { font-size: 12px; color: #7aa2c0; }
+
+.status {
+    font-size: 12px;
+    color: #7aa2c0;
+}
 
 /* сообщения */
 .messages {
@@ -106,6 +81,9 @@ html, body {
     opacity: 0;
     transform: translateY(10px);
     transition: 0.4s;
+
+    line-height: 1.4;
+    word-break: break-word;
 }
 
 .msg.show {
@@ -113,12 +91,7 @@ html, body {
     transform: translateY(0);
 }
 
-.typing {
-    font-size: 14px;
-    color: #7aa2c0;
-    margin-top: 10px;
-}
-
+/* подарок */
 .gift {
     font-size: 50px;
     text-align: center;
@@ -126,80 +99,55 @@ html, body {
     opacity: 0;
     transition: 0.6s;
 }
-
 .gift.show { opacity: 1; }
 </style>
+
 </head>
 
 <body>
 
-<div class="score">💖: <span id="score">0</span></div>
-<div class="game" id="game"></div>
-
 <div class="notify" id="notify">Новое сообщение💌</div>
 
 <div class="chat" id="chat">
+
     <div class="topbar">
         <div class="title">Darling❤️</div>
-        <div class="status">в сети</div>
+        <div class="status" id="status">в сети</div>
     </div>
-    <div class="messages" id="messages">
-        <div class="typing" id="typing" style="display:none;">печатает…</div>
-    </div>
+
+    <div class="messages" id="messages"></div>
+
 </div>
 
 <script>
-let score = 0;
-const game = document.getElementById("game");
 
-/* 🎮 генерация сердечек */
-function spawnHeart() {
-    const el = document.createElement("div");
-    el.className = "drop";
-    el.innerText = "💖";
-
-    el.style.left = Math.random() * 100 + "vw";
-    const duration = 4 + Math.random() * 3;
-    el.style.animationDuration = duration + "s";
-
-    el.onclick = () => {
-        score++;
-        document.getElementById("score").innerText = score;
-        el.remove();
-    };
-
-    game.appendChild(el);
-
-    setTimeout(() => el.remove(), duration * 1000);
-}
-
-setInterval(spawnHeart, 700);
-
-/* 📩 уведомление через 10 сек */
-setTimeout(() => {
-    document.getElementById("notify").classList.add("show");
-}, 10000);
-
-/* открыть чат */
-document.getElementById("notify").onclick = () => {
-    document.getElementById("game").style.display = "none";
-    document.querySelector(".score").style.display = "none";
-    document.getElementById("notify").style.display = "none";
-    document.getElementById("chat").style.display = "flex";
-    sendMessages();
-};
-
-/* сообщения */
 const messages = [
 "Лерочка..",
 "Слушай… сегодня твой день",
+"Я не буду пытаться сказать что-то слишком идеальное — да и, честно, это сейчас не главное",
 "Я просто рад, что ты есть в моей жизни… правда🥰",
-"Ты для меня очень особенная 💖",
-"И я хочу, чтобы ты была счастлива ❤️",
-"С днем рождения, котенок💋"
+"Ты для меня очень особенная. Даже если я не всегда умею это нормально показать.",
+"И знаешь… я правда хочу, чтобы у тебя было больше спокойных дней.",
+"Таких, где тебе легко, где ты просто улыбаешься ни с чего 💖",
+"И чтобы ты меньше сомневалась в себе — ты намного лучше, чем иногда думаешь 🌸",
+"И если совсем честно… я просто хочу, чтобы ты была счастлива. По-настоящему.",
+"Сегодня. И всегда ❤️",
+"Поздравляю тебя с твоим 16 днем рождения, котенок💋"
 ];
 
-const typingEl = document.getElementById("typing");
+const statusEl = document.getElementById("status");
+
+function showNotify() {
+    const n = document.getElementById("notify");
+    n.classList.add("show");
+    n.onclick = openChat;
+}
+
+function openChat() {
+    document.getElementById("notify").style.display = "none";
+    document.getElementById("chat").style.display = "flex";
+    sendMessages();
+}
 
 function rand(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -207,7 +155,9 @@ function rand(min, max) {
 
 function scrollDown() {
     const box = document.getElementById("messages");
-    setTimeout(() => box.scrollTop = box.scrollHeight, 100);
+    setTimeout(() => {
+        box.scrollTop = box.scrollHeight;
+    }, 120);
 }
 
 function sendMessages() {
@@ -219,11 +169,13 @@ function sendMessages() {
             return;
         }
 
-        typingEl.style.display = "block";
-        scrollDown();
+        /* 💬 статус = печатает */
+        statusEl.innerText = "печатает…";
 
         setTimeout(() => {
-            typingEl.style.display = "none";
+
+            /* обратно в сети */
+            statusEl.innerText = "в сети";
 
             const msg = document.createElement("div");
             msg.className = "msg";
@@ -231,14 +183,15 @@ function sendMessages() {
 
             document.getElementById("messages").appendChild(msg);
 
-            setTimeout(() => msg.classList.add("show"), 50);
+            setTimeout(() => msg.classList.add("show"), 60);
 
             scrollDown();
+
             i++;
 
             setTimeout(next, rand(2000, 3500));
 
-        }, rand(2000, 3500));
+        }, rand(2200, 4000));
     }
 
     next();
@@ -256,6 +209,9 @@ function showGift() {
         scrollDown();
     }, 300);
 }
+
+setTimeout(showNotify, 10000);
+
 </script>
 
 </body>
