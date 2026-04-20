@@ -18,305 +18,267 @@ html, body {
 }
 
 /* 🎮 игра */
-.game {
-    position: absolute;
-    inset: 0;
-}
-
+.game { position:absolute; inset:0; }
 .game-text {
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: #7aa2c0;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    color:#7aa2c0;
 }
-
-.score {
-    position: fixed;
-    top: 15px;
-    left: 15px;
-    z-index: 5;
-}
+.score { position:fixed; top:15px; left:15px; }
 
 .drop {
-    position: absolute;
-    font-size: 28px;
+    position:absolute;
+    font-size:28px;
     animation: fall linear forwards;
 }
-
 @keyframes fall {
     from { transform: translateY(-50px); }
     to { transform: translateY(110vh); }
 }
 
-/* 📩 уведомление */
+/* уведомление */
 .notify {
     position: fixed;
     top: -100px;
-    left: 0;
-    right: 0;
-    margin: auto;
+    left: 0; right: 0;
+    margin:auto;
     width: 95%;
     max-width: 420px;
-
-    background: #1f1f1f;
-    border-radius: 12px;
-    padding: 12px;
-
-    display: flex;
-    gap: 10px;
-    align-items: center;
-
-    transition: 0.5s;
-    z-index: 20;
+    background:#1f1f1f;
+    border-radius:12px;
+    padding:12px;
+    display:flex;
+    gap:10px;
+    align-items:center;
+    transition:0.5s;
+    z-index:20;
 }
+.notify.show { top:10px; }
 
-.notify.show { top: 10px; }
-
-/* 💬 чат */
+/* чат */
 .chat {
-    display: none;
-    flex-direction: column;
-    height: 100vh;
+    display:none;
+    flex-direction:column;
+    height:100vh;
 }
-
 .topbar {
-    height: 60px;
-    background: #17212b;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 0 15px;
+    height:60px;
+    background:#17212b;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding:0 15px;
 }
-
-.title { font-weight: bold; }
-.status { font-size: 12px; color: #7aa2c0; }
+.title { font-weight:bold; }
+.status { font-size:12px; color:#7aa2c0; }
 
 .messages {
-    flex: 1;
-    padding: 15px;
-    overflow-y: auto;
-    padding-bottom: 140px;
-
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    flex:1;
+    padding:15px;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    padding-bottom:140px;
 }
 
 .msg {
-    background: #2b5278;
-    padding: 10px 14px;
-    border-radius: 16px;
-
-    max-width: 75%;
-    margin-top: 10px;
-
-    opacity: 0;
-    transform: translateY(10px);
-    transition: 0.4s;
+    background:#2b5278;
+    padding:10px 14px;
+    border-radius:16px;
+    max-width:75%;
+    margin-top:10px;
+    opacity:0;
+    transform:translateY(10px);
+    transition:0.4s;
 }
-
 .msg.show {
-    opacity: 1;
-    transform: translateY(0);
+    opacity:1;
+    transform:translateY(0);
 }
 
-/* 🎬 затемнение */
+/* fade */
 .fade {
-    position: fixed;
-    inset: 0;
-    background: black;
-    opacity: 0;
-    transition: 2s;
-    z-index: 50;
-    pointer-events: none;
+    position:fixed;
+    inset:0;
+    background:black;
+    opacity:0;
+    transition:1.5s;
+    pointer-events:none;
+    z-index:50;
 }
+.fade.show { opacity:0.85; }
 
-.fade.show {
-    opacity: 0.85;
-}
-
-/* 🎁 */
+/* подарок */
 .gift {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0.6);
-
-    font-size: 70px;
-    opacity: 0;
-    transition: 0.8s;
-    z-index: 60;
-    cursor: pointer;
+    position:fixed;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    font-size:70px;
+    opacity:0;
+    transition:0.6s;
+    z-index:60;
+    cursor:pointer;
 }
+.gift.show { opacity:1; }
 
-.gift.show {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-}
-
-/* 📸 ВТОРАЯ СЦЕНА */
+/* 📸 ГАЛЕРЕЯ */
 .scene2 {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: #0b1220;
-    overflow-y: auto;
-    padding: 20px;
+    display:none;
+    position:fixed;
+    inset:0;
+    background:#0b1220;
+    overflow:hidden;
 }
 
-.photo-wrap {
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-    align-items: center;
-    padding-top: 40px;
+/* сетка */
+.grid {
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap:10px;
+    padding:20px;
 }
 
-.photo {
-    width: 90%;
-    max-width: 320px;
-
-    opacity: 0;
-    transform: translateY(20px);
-    animation: appear 0.8s forwards;
+.card {
+    position:relative;
+    border-radius:14px;
+    overflow:hidden;
+    cursor:pointer;
 }
 
-.photo:nth-child(1) { animation-delay: 0.2s; }
-.photo:nth-child(2) { animation-delay: 0.5s; }
-.photo:nth-child(3) { animation-delay: 0.8s; }
-.photo:nth-child(4) { animation-delay: 1.1s; }
-.photo:nth-child(5) { animation-delay: 1.4s; }
-
-.photo img {
-    width: 100%;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+.card img {
+    width:100%;
+    height:180px;
+    object-fit:cover;
+    transition:0.4s;
 }
 
-.caption {
-    margin-top: 8px;
-    font-size: 14px;
-    color: #c7d6ff;
-    text-align: center;
+/* затемнение */
+.overlay {
+    position:fixed;
+    inset:0;
+    background:black;
+    opacity:0;
+    transition:0.4s;
+    z-index:5;
+    pointer-events:none;
 }
 
-@keyframes appear {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+/* активная фотка */
+.active {
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:85%;
+    max-width:350px;
+    z-index:10;
+    border-radius:16px;
+}
+
+.text {
+    position:fixed;
+    bottom:80px;
+    left:50%;
+    transform:translateX(-50%);
+    text-align:center;
+    color:#cfe0ff;
+    z-index:10;
+    opacity:0;
+    transition:0.4s;
+}
+
+/* цветочек */
+.next {
+    position:fixed;
+    bottom:25px;
+    left:50%;
+    transform:translateX(-50%);
+    font-size:28px;
+    opacity:0;
+    cursor:pointer;
+    z-index:10;
 }
 </style>
 </head>
 
 <body>
 
-<!-- 🎮 -->
+<!-- игра -->
 <div class="score">💖: <span id="score">0</span></div>
 <div class="game" id="game"></div>
 <div class="game-text">лови сердечки 💖</div>
 
-<!-- 📩 -->
-<div class="notify" id="notify">
-    ✈️ Telegram — новое сообщение 💌
-</div>
+<!-- уведомление -->
+<div class="notify" id="notify">Telegram — новое сообщение 💌</div>
 
-<!-- 💬 -->
+<!-- чат -->
 <div class="chat" id="chat">
     <div class="topbar">
         <div class="title">Darling❤️</div>
         <div class="status" id="status">в сети</div>
     </div>
-
     <div class="messages" id="messages"></div>
 </div>
 
-<!-- 🎬 -->
 <div class="fade" id="fade"></div>
-
-<!-- 🎁 -->
 <div class="gift" id="gift">🎁</div>
 
-<!-- 📸 ВТОРАЯ СЦЕНА -->
+<!-- галерея -->
 <div class="scene2" id="scene2">
 
-    <div class="photo-wrap">
+    <div class="grid" id="grid">
 
-        <div class="photo">
-            <img src="photo1.jpg">
-            <div class="caption">тёплые моменты 💙</div>
-        </div>
-
-        <div class="photo">
-            <img src="photo2.jpg">
-            <div class="caption">твоя улыбка 🫶</div>
-        </div>
-
-        <div class="photo">
-            <img src="photo3.jpg">
-            <div class="caption">очень красивая 🌸</div>
-        </div>
-
-        <div class="photo">
-            <img src="photo4.jpg">
-            <div class="caption">мне с тобой спокойно ✨</div>
-        </div>
-
-        <div class="photo">
-            <img src="photo5.jpg">
-            <div class="caption">и я рядом ❤️</div>
-        </div>
+        <div class="card"><img src="photo1.jpg"></div>
+        <div class="card"><img src="photo2.jpg"></div>
+        <div class="card"><img src="photo3.jpg"></div>
+        <div class="card"><img src="photo4.jpg"></div>
+        <div class="card"><img src="photo5.jpg"></div>
 
     </div>
+
+    <div class="overlay" id="overlay"></div>
+
+    <img id="big" class="active" style="display:none;">
+    <div class="text" id="text"></div>
+    <div class="next" id="next">🌸</div>
 
 </div>
 
 <script>
 
-/* 🎮 игра */
-let score = 0;
-const game = document.getElementById("game");
+/* игра */
+let score=0;
+const game=document.getElementById("game");
 
-function spawnHeart() {
-    const el = document.createElement("div");
-    el.className = "drop";
-    el.innerText = "💖";
-
-    el.style.left = Math.random() * 100 + "vw";
-    el.style.animationDuration = (4 + Math.random() * 2) + "s";
-
-    el.onclick = () => {
-        score++;
-        document.getElementById("score").innerText = score;
-        el.remove();
-    };
-
-    game.appendChild(el);
-    setTimeout(() => el.remove(), 6000);
+function drop(){
+const el=document.createElement("div");
+el.className="drop";
+el.innerText="💖";
+el.style.left=Math.random()*100+"vw";
+el.style.animationDuration=(3+Math.random()*3)+"s";
+el.onclick=()=>{score++;document.getElementById("score").innerText=score;el.remove();}
+game.appendChild(el);
+setTimeout(()=>el.remove(),6000);
 }
+setInterval(drop,700);
 
-setInterval(spawnHeart, 700);
-
-/* 📩 уведомление */
-setTimeout(() => {
-    document.getElementById("notify").classList.add("show");
-}, 10000);
+/* уведомление */
+setTimeout(()=>notify.classList.add("show"),10000);
 
 /* открыть чат */
-document.getElementById("notify").onclick = () => {
-    document.getElementById("game").style.display = "none";
-    document.querySelector(".game-text").style.display = "none";
-    document.querySelector(".score").style.display = "none";
-
-    document.getElementById("notify").style.display = "none";
-    document.getElementById("chat").style.display = "flex";
-
-    sendMessages();
+notify.onclick=()=>{
+game.remove();
+document.querySelector(".game-text").remove();
+document.querySelector(".score").remove();
+notify.remove();
+chat.style.display="flex";
+send();
 };
 
-/* 💬 текст */
-const messages = [
+/* чат */
+const msgs=[
 "Лерочка..",
 "Слушай… сегодня твой день",
 "Я просто рад, что ты есть в моей жизни… правда🥰",
@@ -325,68 +287,81 @@ const messages = [
 "Сегодня. И всегда ❤️"
 ];
 
-const statusEl = document.getElementById("status");
-
-function rand(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+let i=0;
+function send(){
+if(i>=msgs.length){finish();return;}
+status.innerText="печатает…";
+setTimeout(()=>{
+status.innerText="в сети";
+let d=document.createElement("div");
+d.className="msg";
+d.innerText=msgs[i];
+messages.appendChild(d);
+setTimeout(()=>d.classList.add("show"),50);
+messages.scrollTop=messages.scrollHeight;
+i++;
+setTimeout(send,1400);
+},1700);
 }
 
-function scrollDown() {
-    const box = document.getElementById("messages");
-    setTimeout(() => box.scrollTop = box.scrollHeight, 100);
+/* финал */
+function finish(){
+fade.classList.add("show");
+setTimeout(()=>{
+gift.classList.add("show");
+},1500);
 }
 
-/* 💬 отправка */
-function sendMessages() {
-    let i = 0;
+/* подарок */
+gift.onclick=()=>{
+gift.remove();
+fade.remove();
+chat.style.display="none";
+scene2.style.display="block";
+};
 
-    function next() {
-        if (i >= messages.length) {
-            startFinal();
-            return;
-        }
+/* галерея логика */
+let photos=[...document.querySelectorAll(".card")];
+let big=document.getElementById("big");
+let overlay=document.getElementById("overlay");
+let text=document.getElementById("text");
+let next=document.getElementById("next");
 
-        statusEl.innerText = "печатает…";
+let captions=[
+"ты очень красивая 💙",
+"мне нравится твоя улыбка 🫶",
+"с тобой спокойно 🌸",
+"ты делаешь лучше всё вокруг ✨",
+"и я рядом ❤️"
+];
 
-        setTimeout(() => {
+let current=0;
 
-            statusEl.innerText = "в сети";
+photos.forEach((p,idx)=>{
+p.onclick=()=>{
+big.src=p.querySelector("img").src;
+big.style.display="block";
+overlay.style.opacity="0.7";
+text.style.opacity="1";
+text.innerText=captions[idx];
+next.style.opacity="1";
+current=idx;
+}
+});
 
-            const msg = document.createElement("div");
-            msg.className = "msg";
-            msg.innerText = messages[i];
-
-            document.getElementById("messages").appendChild(msg);
-
-            setTimeout(() => msg.classList.add("show"), 50);
-
-            scrollDown();
-            i++;
-
-            setTimeout(next, rand(1300, 2200));
-
-        }, rand(1500, 2500));
-    }
-
-    next();
+next.onclick=()=>{
+current++;
+if(current>=photos.length)return;
+big.src=photos[current].querySelector("img").src;
+text.innerText=captions[current];
 }
 
-/* 🎬 финал */
-function startFinal() {
-    const fade = document.getElementById("fade");
-    const gift = document.getElementById("gift");
-
-    fade.classList.add("show");
-
-    setTimeout(() => {
-        gift.classList.add("show");
-    }, 1800);
-
-    gift.onclick = () => {
-        document.getElementById("chat").style.display = "none";
-        document.getElementById("scene2").style.display = "flex";
-    };
-}
+overlay.onclick=()=>{
+overlay.style.opacity="0";
+big.style.display="none";
+text.style.opacity="0";
+next.style.opacity="0";
+};
 
 </script>
 
