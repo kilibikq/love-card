@@ -29,7 +29,6 @@ html, body {
     left: 50%;
     transform: translate(-50%, -50%);
     color: #7aa2c0;
-    font-size: 18px;
 }
 
 .score {
@@ -73,21 +72,6 @@ html, body {
 }
 
 .notify.show { top: 10px; }
-
-.logo {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: #2AABEE;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.notify-text {
-    display: flex;
-    flex-direction: column;
-}
 
 /* 💬 чат */
 .chat {
@@ -143,22 +127,21 @@ html, body {
     inset: 0;
     background: black;
     opacity: 0;
-    pointer-events: none;
     transition: 2s;
     z-index: 50;
+    pointer-events: none;
 }
 
 .fade.show {
     opacity: 0.85;
-    pointer-events: all;
 }
 
-/* 🎁 подарок */
+/* 🎁 */
 .gift {
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) scale(0.5);
+    transform: translate(-50%, -50%) scale(0.6);
 
     font-size: 70px;
     opacity: 0;
@@ -172,22 +155,57 @@ html, body {
     transform: translate(-50%, -50%) scale(1);
 }
 
-/* вторая сцена */
+/* 📸 ВТОРАЯ СЦЕНА */
 .scene2 {
     display: none;
     position: fixed;
     inset: 0;
-    background: #0e1621;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    text-align: center;
+    background: #0b1220;
+    overflow-y: auto;
     padding: 20px;
-    z-index: 70;
 }
 
-.scene2 h1 {
-    font-size: 22px;
+.photo-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    align-items: center;
+    padding-top: 40px;
+}
+
+.photo {
+    width: 90%;
+    max-width: 320px;
+
+    opacity: 0;
+    transform: translateY(20px);
+    animation: appear 0.8s forwards;
+}
+
+.photo:nth-child(1) { animation-delay: 0.2s; }
+.photo:nth-child(2) { animation-delay: 0.5s; }
+.photo:nth-child(3) { animation-delay: 0.8s; }
+.photo:nth-child(4) { animation-delay: 1.1s; }
+.photo:nth-child(5) { animation-delay: 1.4s; }
+
+.photo img {
+    width: 100%;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.caption {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #c7d6ff;
+    text-align: center;
+}
+
+@keyframes appear {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 </style>
 </head>
@@ -201,11 +219,7 @@ html, body {
 
 <!-- 📩 -->
 <div class="notify" id="notify">
-    <div class="logo">✈️</div>
-    <div>
-        <b>Telegram</b><br>
-        Darling❤️: новое сообщение 💌
-    </div>
+    ✈️ Telegram — новое сообщение 💌
 </div>
 
 <!-- 💬 -->
@@ -224,9 +238,38 @@ html, body {
 <!-- 🎁 -->
 <div class="gift" id="gift">🎁</div>
 
-<!-- 💭 вторая сцена -->
+<!-- 📸 ВТОРАЯ СЦЕНА -->
 <div class="scene2" id="scene2">
-    <h1>Вторая часть поздравления будет здесь 💙</h1>
+
+    <div class="photo-wrap">
+
+        <div class="photo">
+            <img src="photo1.jpg">
+            <div class="caption">тёплые моменты 💙</div>
+        </div>
+
+        <div class="photo">
+            <img src="photo2.jpg">
+            <div class="caption">твоя улыбка 🫶</div>
+        </div>
+
+        <div class="photo">
+            <img src="photo3.jpg">
+            <div class="caption">очень красивая 🌸</div>
+        </div>
+
+        <div class="photo">
+            <img src="photo4.jpg">
+            <div class="caption">мне с тобой спокойно ✨</div>
+        </div>
+
+        <div class="photo">
+            <img src="photo5.jpg">
+            <div class="caption">и я рядом ❤️</div>
+        </div>
+
+    </div>
+
 </div>
 
 <script>
@@ -255,7 +298,7 @@ function spawnHeart() {
 
 setInterval(spawnHeart, 700);
 
-/* уведомление */
+/* 📩 уведомление */
 setTimeout(() => {
     document.getElementById("notify").classList.add("show");
 }, 10000);
@@ -264,12 +307,15 @@ setTimeout(() => {
 document.getElementById("notify").onclick = () => {
     document.getElementById("game").style.display = "none";
     document.querySelector(".game-text").style.display = "none";
+    document.querySelector(".score").style.display = "none";
+
     document.getElementById("notify").style.display = "none";
     document.getElementById("chat").style.display = "flex";
+
     sendMessages();
 };
 
-/* сообщения */
+/* 💬 текст */
 const messages = [
 "Лерочка..",
 "Слушай… сегодня твой день",
@@ -290,13 +336,13 @@ function scrollDown() {
     setTimeout(() => box.scrollTop = box.scrollHeight, 100);
 }
 
-/* 💬 чат */
+/* 💬 отправка */
 function sendMessages() {
     let i = 0;
 
     function next() {
         if (i >= messages.length) {
-            startFinalScene();
+            startFinal();
             return;
         }
 
@@ -317,17 +363,16 @@ function sendMessages() {
             scrollDown();
             i++;
 
-            setTimeout(next, rand(1400, 2200));
+            setTimeout(next, rand(1300, 2200));
 
-        }, rand(1600, 2600));
+        }, rand(1500, 2500));
     }
 
     next();
 }
 
 /* 🎬 финал */
-function startFinalScene() {
-
+function startFinal() {
     const fade = document.getElementById("fade");
     const gift = document.getElementById("gift");
 
@@ -335,12 +380,9 @@ function startFinalScene() {
 
     setTimeout(() => {
         gift.classList.add("show");
-    }, 2000);
+    }, 1800);
 
     gift.onclick = () => {
-        gift.style.display = "none";
-        fade.style.display = "none";
-
         document.getElementById("chat").style.display = "none";
         document.getElementById("scene2").style.display = "flex";
     };
