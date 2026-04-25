@@ -42,10 +42,6 @@ html, body {
     height:100vh;
 }
 
-.input-bar {
-    display:none;
-}
-    
 .topbar {
     height:64px;
     background:#17212b;
@@ -118,6 +114,42 @@ html, body {
     font-size:15px;
     cursor:pointer;
     z-index:10;
+}
+
+.input-bar {
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    height:60px;
+    background:#17212b;
+    display:flex;
+    align-items:center;
+    padding:0 12px;
+    box-sizing:border-box;
+    z-index:20;
+}
+
+.input-placeholder {
+    flex:1;
+    background:#0e1621;
+    padding:10px 12px;
+    border-radius:20px;
+    color:#7aa2c0;
+    font-size:14px;
+}
+
+.send-btn {
+    width:40px;
+    height:40px;
+    margin-left:10px;
+    background:#2b5278;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    font-size:16px;
 }
     
 /* ❤️ финал (УЛУЧШЕННЫЙ) */
@@ -254,8 +286,8 @@ setTimeout(()=>notify.classList.add("show"),4000);
 notify.onclick = () => {
 notify.style.display="none";
 chat.style.display="flex";
-document.querySelector(".input-bar").style.display = "flex";
 startChat();
+};
 
 function startChat(){
 
@@ -325,6 +357,11 @@ function createHeart() {
 setInterval(createHeart, 300);
 
 </script>
+
+<div class="input-bar">
+    <div class="input-placeholder">Написать сообщение...</div>
+    <div class="send-btn">➤</div>
+</div>
     
 </body>
 </html>
