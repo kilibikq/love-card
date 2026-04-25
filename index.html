@@ -42,6 +42,10 @@ html, body {
     height:100vh;
 }
 
+.input-bar {
+    display:none;
+}
+    
 .topbar {
     height:64px;
     background:#17212b;
@@ -286,8 +290,8 @@ setTimeout(()=>notify.classList.add("show"),4000);
 notify.onclick = () => {
 notify.style.display="none";
 chat.style.display="flex";
+document.querySelector(".input-bar").style.display = "flex";
 startChat();
-};
 
 function startChat(){
 
