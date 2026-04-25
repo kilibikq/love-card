@@ -11,7 +11,7 @@ html, body {
     margin:0;
     height:100%;
     background:#0e1621;
-    font-family:Arial;
+    font-family: Arial, sans-serif;
     overflow:hidden;
     color:white;
 }
@@ -60,39 +60,52 @@ html, body {
 }
 
 .topbar {
-    height:60px;
+    height:64px;
     background:#17212b;
     display:flex;
     flex-direction:column;
     justify-content:center;
-    padding:0 15px;
+    padding:0 16px;
 }
 
-.title { font-weight:bold; }
-.status { font-size:12px; color:#7aa2c0; }
+.title {
+    font-weight:600;
+    font-size:16px;
+}
 
+.status {
+    font-size:12px;
+    color:#7aa2c0;
+}
+
+/* 💬 сообщения */
 .messages {
     flex:1;
-    padding:15px;
+    padding:18px 14px;
     overflow-y:auto;
+    -webkit-overflow-scrolling: touch;
+
     display:flex;
     flex-direction:column;
+    gap:10px;
 }
 
+/* пузырь */
 .msg {
     background:#2b5278;
-    padding:10px 12px;
-    border-radius:14px;
-    font-size:14px;
-    margin-top:8px;
+    padding:12px 14px;
+    border-radius:16px;
+
+    font-size:16px;
+    line-height:1.35;
+
+    max-width:85%;
+    width:fit-content;
+    word-wrap:break-word;
 
     opacity:0;
-    transform:translateY(8px);
-    transition:0.3s;
-
-    width:fit-content;
-    max-width:80%;
-    word-wrap:break-word;
+    transform:translateY(10px);
+    transition:0.25s;
 }
 
 .msg.show {
@@ -104,12 +117,13 @@ html, body {
 .next-btn {
     display:none;
     position:fixed;
-    bottom:20px;
+    bottom:22px;
     left:50%;
     transform:translateX(-50%);
     background:#2b5278;
-    padding:10px 18px;
-    border-radius:20px;
+    padding:12px 20px;
+    border-radius:22px;
+    font-size:15px;
     cursor:pointer;
     z-index:10;
 }
@@ -163,6 +177,7 @@ html, body {
         <div class="title">Darling❤️</div>
         <div class="status" id="status">в сети</div>
     </div>
+
     <div class="messages" id="messages"></div>
 </div>
 
@@ -186,19 +201,18 @@ const nextBtn = document.getElementById("nextBtn");
 
 let i = 0;
 
-/* 💬 ДЛИННОЕ ПОЗДРАВЛЕНИЕ (ВОЗВРАЩЕНО) */
+/* 💬 текст */
 const msgs = [
 "Лерочка…",
 "Слушай… сегодня твой день ✨",
 "Я не буду пытаться сказать что-то слишком идеальное — это, наверное, и не нужно",
 "Я просто рад, что ты есть в моей жизни… правда",
 "С тобой у меня много спокойствия и тепла внутри",
-"Ты очень особенная для меня, даже если я не всегда умею это нормально показать",
-"И я правда ценю каждое твоё появление в моей жизни",
-"Я хочу, чтобы у тебя было больше дней, где тебе легко, спокойно и хорошо",
-"Чтобы ты чаще улыбалась просто так, без причины",
-"Ты намного сильнее и лучше, чем иногда сама о себе думаешь",
-"И если честно… мне просто важно, чтобы ты была счастлива",
+"Ты очень особенная для меня",
+"И я правда ценю тебя",
+"Я хочу, чтобы у тебя всё было хорошо",
+"Ты намного сильнее, чем думаешь",
+"И мне важно, чтобы ты улыбалась",
 "Сегодня. И всегда",
 "С днём рождения тебя 🎂",
 "И что бы не случилось, знай — я рядом ❤️"
@@ -258,7 +272,7 @@ setTimeout(()=>document.getElementById("bottom").classList.add("show"),1600);
 
 };
 
-/* 💖 ЛЕТАЮЩИЕ СЕРДЕЧКИ */
+/* 💖 сердечки фон */
 function createHearts(){
 const h = document.createElement("div");
 h.className = "bg-heart";
