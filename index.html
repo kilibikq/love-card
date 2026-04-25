@@ -16,116 +16,252 @@ html, body {
     color:white;
 }
 
-/* 🎮 */
-.game {
+/* 📩 уведомление */
+.notify {
+    position:fixed;
+    top:-100px;
+    left:0;
+    right:0;
+    margin:auto;
+    width:90%;
+    max-width:420px;
+    background:#1f1f1f;
+    border-radius:12px;
+    padding:12px;
+    transition:0.5s;
+    z-index:999;
+    text-align:center;
+}
+
+.notify.show { top:10px; }
+
+/* 💬 чат */
+.chat {
+    display:none;
+    flex-direction:column;
+    height:100vh;
+}
+
+.topbar {
+    height:60px;
+    background:#17212b;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding:0 15px;
+}
+
+.title { font-weight:bold; }
+.status { font-size:12px; color:#7aa2c0; }
+
+.messages {
+    flex:1;
+    padding:15px;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+}
+
+.msg {
+    background:#2b5278;
+    padding:8px 12px;
+    border-radius:14px;
+    max-width:75%;
+    font-size:14px;
+    margin-top:8px;
+    opacity:0;
+    transform:translateY(8px);
+    transition:0.35s;
+}
+
+.msg.show {
+    opacity:1;
+    transform:translateY(0);
+}
+
+/* 🔘 */
+.next-btn {
+    display:none;
+    position:fixed;
+    bottom:20px;
+    left:50%;
+    transform:translateX(-50%);
+    background:#2b5278;
+    padding:10px 18px;
+    border-radius:20px;
+    cursor:pointer;
+}
+
+/* 🌙 затемнение */
+.fade {
     position:fixed;
     inset:0;
-    display:flex;
-    flex-wrap:wrap;
-    align-content:center;
-    justify-content:center;
-    gap:15px;
-    padding:20px;
-    touch-action: manipulation;
+    background:black;
+    opacity:0;
+    transition:1.5s;
+    z-index:50;
 }
 
-/* 🎁 */
-.box {
-    width:70px;
-    height:70px;
-    background:#2b5278;
-    border-radius:12px;
-    display:flex;
+.fade.show { opacity:1; }
+
+/* ❤️ финал */
+.final {
+    position:fixed;
+    inset:0;
+    display:none;
     justify-content:center;
     align-items:center;
-    font-size:30px;
-    user-select:none;
+    flex-direction:column;
+    background:black;
+    z-index:60;
 }
 
-/* 📝 */
-.game-text-bottom{
-position:fixed;
-bottom:25px;
-left:50%;
-transform:translateX(-50%);
-color:#7aa2c0;
-font-size:14px;
-text-align:center;
+.heart {
+    font-size:90px;
+    animation:pulse 1.2s infinite;
 }
 
-/* 📊 */
-.score {
-    position:fixed;
-    top:15px;
-    left:15px;
-    z-index:5;
+@keyframes pulse {
+    0% { transform:scale(1); }
+    50% { transform:scale(1.15); }
+    100% { transform:scale(1); }
 }
+
+.text {
+    position:absolute;
+    font-size:22px;
+    opacity:0;
+    transition:1s;
+}
+
+.top { top:25%; }
+.bottom { bottom:25%; }
+
+.show { opacity:1 !important; }
 
 </style>
 </head>
 
 <body>
 
-<div class="score">Найдено ❤️: <span id="score">0</span></div>
+<!-- 📩 -->
+<div class="notify" id="notify">Telegram — новое сообщение 💌</div>
 
-<div class="game" id="game"></div>
+<!-- 💬 -->
+<div class="chat" id="chat">
+    <div class="topbar">
+        <div class="title">Darling❤️</div>
+        <div class="status" id="status">в сети</div>
+    </div>
+    <div class="messages" id="messages"></div>
+</div>
 
-<div class="game-text-bottom">найди сердечко в подарках 🎁</div>
+<!-- 🔘 -->
+<div class="next-btn" id="nextBtn">Далее</div>
+
+<!-- 🌙 -->
+<div class="fade" id="fade"></div>
+
+<!-- ❤️ -->
+<div class="final" id="final">
+    <div class="text top" id="top">С днём рождения</div>
+    <div class="heart">❤️</div>
+    <div class="text bottom" id="bottom">Любимая</div>
+</div>
 
 <script>
 
-let score = 0;
-let found = false;
+const notify = document.getElementById("notify");
+const chat = document.getElementById("chat");
+const messages = document.getElementById("messages");
+const status = document.getElementById("status");
+const nextBtn = document.getElementById("nextBtn");
 
-const game = document.getElementById("game");
+let i = 0;
 
-function generateBoxes(){
+/* 💬 ТВОЙ ГОТОВЫЙ ТЕКСТ */
+const msgs = [
+"Лерочка…",
+"Слушай… сегодня твой день ✨",
+"Я не буду пытаться сказать что-то слишком идеальное — это, наверное, и не нужно",
+"Я просто рад, что ты есть в моей жизни… правда",
+"С тобой у меня много спокойствия и тепла внутри",
+"Ты очень особенная для меня, даже если я не всегда умею это нормально показать",
+"И я правда ценю каждое твоё появление в моей жизни",
+"Я хочу, чтобы у тебя было больше дней, где тебе легко, спокойно и хорошо",
+"Чтобы ты чаще улыбалась просто так, без причины",
+"Ты намного сильнее и лучше, чем иногда сама о себе думаешь",
+"И если честно… мне просто важно, чтобы ты была счастлива",
+"Сегодня. И всегда",
+"С днём рождения тебя 🎂",
+"И что бы не случилось, знай — я рядом ❤️"
+];
 
-game.innerHTML = "";
-found = false;
+/* 📩 уведомление */
+setTimeout(()=>notify.classList.add("show"),8000);
 
-const heartIndex = Math.floor(Math.random() * 9);
+/* 💥 старт */
+notify.onclick = () => {
 
-for(let i=0;i<9;i++){
+notify.style.display="none";
+chat.style.display="flex";
 
-const box = document.createElement("div");
-box.className = "box";
-box.innerText = "🎁";
-box.dataset.i = i;
-
-game.appendChild(box);
-}
-
-/* 💥 САМЫЙ СТАБИЛЬНЫЙ ХИТ-ТЕСТ */
-game.ontouchstart = (e) => {
-
-const t = e.touches[0];
-const el = document.elementFromPoint(t.clientX, t.clientY);
-
-if(!el || !el.classList.contains("box")) return;
-if(found) return;
-
-const idx = Number(el.dataset.i);
-
-if(idx === heartIndex){
-
-el.innerText = "❤️";
-score++;
-document.getElementById("score").innerText = score;
-
-found = true;
-
-setTimeout(generateBoxes, 600);
-
-} else {
-el.style.opacity = "0.3";
-}
-
+startChat();
 };
 
+/* 💬 чат */
+function startChat(){
+
+function next(){
+
+if(i >= msgs.length){
+nextBtn.style.display="block";
+return;
 }
 
-generateBoxes();
+status.innerText="печатает…";
+
+setTimeout(()=>{
+
+status.innerText="в сети";
+
+const d = document.createElement("div");
+d.className = "msg";
+d.innerText = msgs[i];
+
+messages.appendChild(d);
+setTimeout(()=>d.classList.add("show"),50);
+
+messages.scrollTop = messages.scrollHeight;
+
+i++;
+setTimeout(next,900);
+
+},1000);
+
+}
+
+next();
+}
+
+/* 🔘 финал */
+nextBtn.onclick = () => {
+
+document.getElementById("fade").classList.add("show");
+
+setTimeout(()=>{
+document.getElementById("final").style.display="flex";
+},1200);
+
+setTimeout(()=>{
+document.getElementById("top").classList.add("show");
+},2000);
+
+setTimeout(()=>{
+document.getElementById("bottom").classList.add("show");
+},2800);
+
+};
 
 </script>
 
