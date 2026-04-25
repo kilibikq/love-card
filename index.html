@@ -82,7 +82,7 @@ html, body {
     border-radius:16px;
 
     font-size:16px;
-    font-weight:500; /* 💥 ВАЖНО: делает текст не “тонким” */
+    font-weight:500;
     line-height:1.35;
 
     max-width:85%;
@@ -114,7 +114,7 @@ html, body {
     z-index:10;
 }
 
-/* ❤️ финал */
+/* ❤️ финал (УЛУЧШЕННЫЙ) */
 .final {
     position:fixed;
     inset:0;
@@ -122,18 +122,42 @@ html, body {
     justify-content:center;
     align-items:center;
     flex-direction:column;
-    background:black;
+    background: radial-gradient(circle at center, #111827, #000);
     z-index:60;
+    overflow:hidden;
+}
+
+.final::before {
+    content:"";
+    position:absolute;
+    inset:0;
+    background: radial-gradient(circle, rgba(255,255,255,0.05), transparent 60%);
+    animation: glowIn 2s ease forwards;
+}
+
+@keyframes glowIn {
+    from { opacity:0; }
+    to { opacity:1; }
 }
 
 .heart {
     font-size:90px;
-    animation:pulse 1.2s infinite;
+    opacity:0;
+    transform:scale(0.3);
+    filter: drop-shadow(0 0 25px rgba(255, 60, 120, 0.4));
+    animation: heartPop 1.2s ease forwards, pulse 1.6s infinite 1.2s;
+}
+
+@keyframes heartPop {
+    to {
+        opacity:1;
+        transform:scale(1);
+    }
 }
 
 @keyframes pulse {
     0% { transform:scale(1); }
-    50% { transform:scale(1.15); }
+    50% { transform:scale(1.12); }
     100% { transform:scale(1); }
 }
 
@@ -141,14 +165,19 @@ html, body {
     position:absolute;
     font-size:22px;
     opacity:0;
+    transform:translateY(10px);
     transition:1s;
 }
 
-.top { top:25%; }
-.bottom { bottom:25%; }
+.top { top:30%; }
+.bottom { bottom:30%; }
 
-.show { opacity:1 !important; }
+.show {
+    opacity:1 !important;
+    transform:translateY(0);
+}
 
+/* 💖 фоновые сердечки */
 .bg-heart {
     position: fixed;
     top: 100vh;
@@ -162,7 +191,7 @@ html, body {
     from { transform: translateY(0); }
     to { transform: translateY(-120vh); }
 }
-    
+
 </style>
 </head>
 
@@ -197,7 +226,6 @@ const nextBtn = document.getElementById("nextBtn");
 
 let i = 0;
 
-/* 💬 ПОЗДРАВЛЕНИЕ */
 const msgs = [
 "Лерочка…",
 "Сегодня твой день ✨",
@@ -215,8 +243,7 @@ const msgs = [
 "А да, к чему я веду..."
 ];
 
-/* старт */
-setTimeout(()=>notify.classList.add("show"),1500);
+setTimeout(()=>notify.classList.add("show"),4000);
 
 notify.onclick = () => {
 notify.style.display="none";
@@ -249,7 +276,7 @@ setTimeout(()=>d.classList.add("show"),50);
 messages.scrollTop = messages.scrollHeight;
 
 i++;
-setTimeout(next,1200);
+setTimeout(next,2500);
 
 },900);
 
@@ -258,15 +285,23 @@ setTimeout(next,1200);
 next();
 }
 
+/* 💥 ФИНАЛ (УЛУЧШЕННЫЙ) */
 nextBtn.onclick = () => {
 
-document.getElementById("final").style.display="flex";
+const final = document.getElementById("final");
+final.style.display = "flex";
 
-setTimeout(()=>document.getElementById("top").classList.add("show"),800);
-setTimeout(()=>document.getElementById("bottom").classList.add("show"),1600);
+setTimeout(() => {
+    document.getElementById("top").classList.add("show");
+}, 900);
+
+setTimeout(() => {
+    document.getElementById("bottom").classList.add("show");
+}, 1800);
 
 };
 
+/* 💖 сердечки */
 function createHeart() {
     const h = document.createElement("div");
     h.innerText = "❤️";
