@@ -2,370 +2,248 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>💌</title>
 
 <style>
-html, body {
-    margin:0;
-    height:100%;
-    background:#0e1621;
-    font-family:Arial;
-    overflow:hidden;
-    color:white;
+html,body{
+margin:0;
+height:100%;
+background:#0e1621;
+font-family:Arial;
+overflow:hidden;
+color:white;
 }
 
-/* 🎮 ИГРА */
-.game {
-    position:fixed;
-    inset:0;
-    overflow:hidden;
-    z-index:1;
+/* 🌸 поле */
+.game{
+position:fixed;
+inset:0;
+display:flex;
+flex-wrap:wrap;
+align-content:flex-start;
+padding:20px;
+gap:10px;
 }
 
-.game-text {
-    position:fixed;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    color:#7aa2c0;
-    pointer-events:none;
-    z-index:2;
+.item{
+width:60px;
+height:60px;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:32px;
+border-radius:12px;
+background:rgba(255,255,255,0.05);
+cursor:pointer;
+user-select:none;
 }
 
-.score {
-    position:fixed;
-    top:15px;
-    left:15px;
-    z-index:2;
+/* 📊 */
+.score{
+position:fixed;
+top:15px;
+left:15px;
 }
 
-.drop {
-    position:absolute;
-    font-size:40px;
-    user-select:none;
-    cursor:pointer;
-    touch-action:manipulation;
-    z-index:9999;
+/* 📩 */
+.notify{
+position:fixed;
+top:-120px;
+left:0;
+right:0;
+margin:auto;
+width:90%;
+max-width:420px;
+background:#1f1f1f;
+border-radius:12px;
+padding:12px;
+transition:0.5s;
 }
 
-/* 📩 уведомление */
-.notify {
-    position:fixed;
-    top:-120px;
-    left:0;
-    right:0;
-    margin:auto;
-    width:90%;
-    max-width:420px;
-    background:#1f1f1f;
-    border-radius:12px;
-    padding:12px;
-    transition:0.5s;
-    z-index:999;
+.notify.show{ top:10px; }
+
+/* 💬 чат */
+.chat{
+display:none;
+flex-direction:column;
+height:100vh;
 }
 
-.notify.show { top:10px; }
-
-/* 💬 ЧАТ */
-.chat {
-    display:none;
-    flex-direction:column;
-    height:100vh;
+.topbar{
+height:60px;
+background:#17212b;
+display:flex;
+align-items:center;
+padding:0 15px;
+font-weight:bold;
 }
 
-.topbar {
-    height:60px;
-    background:#17212b;
-    display:flex;
-    align-items:center;
-    padding:0 15px;
-    font-weight:bold;
+.status{
+font-size:12px;
+color:#7aa2c0;
+margin-left:10px;
+font-weight:normal;
 }
 
-.status {
-    font-size:12px;
-    color:#7aa2c0;
-    margin-left:10px;
-    font-weight:normal;
+.messages{
+flex:1;
+padding:15px;
+overflow-y:auto;
+display:flex;
+flex-direction:column;
 }
 
-.messages {
-    flex:1;
-    padding:15px;
-    overflow-y:auto;
-    display:flex;
-    flex-direction:column;
+.msg{
+background:#2b5278;
+padding:9px 12px;
+border-radius:14px;
+max-width:80%;
+font-size:14px;
+margin-top:8px;
+opacity:0;
+transform:translateY(8px);
+transition:0.3s;
 }
 
-.msg {
-    background:#2b5278;
-    padding:9px 12px;
-    border-radius:14px;
-    max-width:80%;
-    font-size:14px;
-    margin-top:8px;
-    opacity:0;
-    transform:translateY(8px);
-    transition:0.3s;
+.msg.show{
+opacity:1;
+transform:translateY(0);
 }
-
-.msg.show {
-    opacity:1;
-    transform:translateY(0);
-}
-
-/* 🔘 кнопка */
-.next-btn {
-    display:none;
-    position:fixed;
-    bottom:20px;
-    left:50%;
-    transform:translateX(-50%);
-    background:#2b5278;
-    padding:10px 18px;
-    border-radius:20px;
-    font-size:14px;
-    cursor:pointer;
-    z-index:1000;
-}
-
-/* 🌙 */
-.fade {
-    position:fixed;
-    inset:0;
-    background:black;
-    opacity:0;
-    transition:1.5s;
-    z-index:50;
-}
-
-/* ❤️ финал */
-.final {
-    position:fixed;
-    inset:0;
-    display:none;
-    justify-content:center;
-    align-items:center;
-    flex-direction:column;
-    background:black;
-    z-index:60;
-}
-
-.heart {
-    font-size:90px;
-    animation:pulse 1.2s infinite;
-}
-
-@keyframes pulse {
-    0%{transform:scale(1);}
-    50%{transform:scale(1.15);}
-    100%{transform:scale(1);}
-}
-
-.text {
-    position:absolute;
-    font-size:22px;
-    opacity:0;
-    transition:1s;
-}
-
-.top { top:25%; }
-.bottom { bottom:25%; }
-
-.show { opacity:1 !important; }
 
 </style>
 </head>
 
 <body>
 
-<!-- 🎮 -->
-<div class="score">💖: <span id="score">0</span></div>
+<!-- 🌸 игра -->
+<div class="score">Найдено 💖: <span id="score">0</span></div>
 <div class="game" id="game"></div>
-<div class="game-text">нажимай на сердечки 💖</div>
 
 <!-- 📩 -->
 <div class="notify" id="notify">Telegram — новое сообщение 💌</div>
 
 <!-- 💬 -->
 <div class="chat" id="chat">
-    <div class="topbar">
-        Darling❤️
-        <span class="status" id="status">в сети</span>
-    </div>
+  <div class="topbar">
+    Darling❤️
+    <span class="status" id="status">в сети</span>
+  </div>
 
-    <div class="messages" id="messages"></div>
-</div>
-
-<!-- 🔘 -->
-<div class="next-btn" id="nextBtn">Далее</div>
-
-<!-- 🌙 -->
-<div class="fade" id="fade"></div>
-
-<!-- ❤️ -->
-<div class="final" id="final">
-    <div class="text top" id="top">С днём рождения</div>
-    <div class="heart">❤️</div>
-    <div class="text bottom" id="bottom">Любимая</div>
+  <div class="messages" id="messages"></div>
 </div>
 
 <script>
 
-/* ===================== */
-/* 💖 ИГРА */
-/* ===================== */
-
 let score = 0;
-let locked = false;
+let found = 0;
 
-function spawn() {
-    if (locked) return;
+const game = document.getElementById("game");
+const notify = document.getElementById("notify");
+const chat = document.getElementById("chat");
+const messages = document.getElementById("messages");
+const status = document.getElementById("status");
 
-    const el = document.createElement("div");
-    el.className = "drop";
-    el.innerText = "💖";
+/* 🌸 генерация поля */
+function generate(){
 
-    let x = Math.random() * (window.innerWidth - 50);
-    let y = -50;
+game.innerHTML = "";
 
-    el.style.left = x + "px";
-    el.style.top = y + "px";
+for(let i=0;i<18;i++){
 
-    document.getElementById("game").appendChild(el);
+const el = document.createElement("div");
+el.className = "item";
 
-    const speed = 0.8 + Math.random() * 1.2; // медленно
+/* 1 случайное сердечко */
+if(i === Math.floor(Math.random()*18)){
+el.innerText = "💖";
+el.onclick = () => {
+score++;
+document.getElementById("score").innerText = score;
 
-    function move() {
-        if (locked) {
-            el.remove();
-            return;
-        }
+found++;
 
-        y += speed;
-        el.style.top = y + "px";
-
-        if (y > window.innerHeight) {
-            el.remove();
-            return;
-        }
-
-        requestAnimationFrame(move);
-    }
-
-    move();
-
-    const hit = () => {
-        score++;
-        document.getElementById("score").innerText = score;
-        el.remove();
-    };
-
-    el.addEventListener("click", hit);
-    el.addEventListener("touchstart", hit);
+if(found >= 3){
+startChat();
+}else{
+generate();
+}
+};
+} else {
+el.innerText = "🌸";
+el.onclick = () => {
+el.style.opacity = "0.3";
+};
 }
 
-setInterval(spawn, 650);
+game.appendChild(el);
+}
+
+}
+
+generate();
 
 /* 📩 */
-setTimeout(() => {
-    document.getElementById("notify").classList.add("show");
-}, 8000);
+setTimeout(()=>{
+notify.classList.add("show");
+},1500);
 
-/* 💥 старт */
-document.getElementById("notify").onclick = () => {
-
-locked = true;
-
-document.getElementById("game").style.display = "none";
-document.querySelector(".game-text").style.display = "none";
-document.querySelector(".score").style.display = "none";
-document.getElementById("notify").style.display = "none";
-
-document.getElementById("chat").style.display = "flex";
-
-startChat();
+notify.onclick = () => {
+notify.style.display = "none";
 };
 
-/* 💬 ПОЛНЫЙ ТЕКСТ */
+/* 💬 чат */
 const msgs = [
 "Лерочка…",
 "Слушай… сегодня твой день ✨",
-"Я не буду пытаться сказать что-то слишком идеальное — это, наверное, и не нужно 💫",
-"Я просто рад, что ты есть в моей жизни… правда 🥰",
-"Ты очень особенная для меня, даже если я не всегда умею это красиво показать 💖",
-"И я хочу, чтобы у тебя было больше спокойных дней —",
-"таких, где тебе просто хорошо, где ты улыбаешься без причины 💕",
-"Чтобы ты никогда не сомневалась в себе 🌸",
-"Ты правда намного лучше, чем иногда думаешь ✨",
-"И… если совсем честно —",
-"я просто хочу, чтобы ты была счастлива. По-настоящему ❤️",
+"Я просто рад, что ты есть 🥰",
+"Ты очень особенная 💖",
+"И я хочу, чтобы ты была счастлива ❤️",
 "Сегодня… и всегда",
 "С днём рождения тебя 🎂",
-"И несмотря ни на что — знай, я рядом ❤️"
+"И знай — я рядом ❤️"
 ];
 
 let i = 0;
 
-function startChat() {
+function startChat(){
 
-function next() {
+game.style.display = "none";
+chat.style.display = "flex";
 
-if (i >= msgs.length) {
-    document.getElementById("nextBtn").style.display = "block";
-    return;
+function next(){
+
+if(i >= msgs.length){
+status.innerText = "в сети";
+return;
 }
 
-document.getElementById("status").innerText = "печатает…";
+status.innerText = "печатает…";
 
-setTimeout(() => {
+setTimeout(()=>{
 
-document.getElementById("status").innerText = "в сети";
+status.innerText = "в сети";
 
 const d = document.createElement("div");
 d.className = "msg";
 d.innerText = msgs[i];
 
-document.getElementById("messages").appendChild(d);
+messages.appendChild(d);
+setTimeout(()=>d.classList.add("show"),50);
 
-setTimeout(() => d.classList.add("show"), 50);
-
-document.getElementById("messages").scrollTop =
-document.getElementById("messages").scrollHeight;
+messages.scrollTop = messages.scrollHeight;
 
 i++;
 
-setTimeout(next, 900);
+setTimeout(next,900);
 
-}, 1200);
+},1000);
 
 }
 
 next();
 }
-
-/* 🔘 финал */
-document.getElementById("nextBtn").onclick = () => {
-
-document.getElementById("nextBtn").style.display = "none";
-
-document.getElementById("fade").classList.add("show");
-
-setTimeout(() => {
-document.getElementById("final").style.display = "flex";
-}, 1500);
-
-setTimeout(() => {
-document.getElementById("top").classList.add("show");
-}, 2200);
-
-setTimeout(() => {
-document.getElementById("bottom").classList.add("show");
-}, 3000);
-
-};
 
 </script>
 
