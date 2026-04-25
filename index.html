@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-<title>💙</title>
+<title>💌</title>
 
 <style>
 html, body {
@@ -30,8 +30,8 @@ html, body {
     left:50%;
     transform:translate(-50%,-50%);
     color:#7aa2c0;
-    z-index:2;
     pointer-events:none;
+    z-index:2;
 }
 
 .score {
@@ -43,7 +43,7 @@ html, body {
 
 .drop {
     position:absolute;
-    font-size:34px;
+    font-size:40px;
     user-select:none;
     cursor:pointer;
     touch-action:manipulation;
@@ -79,18 +79,21 @@ html, body {
     height:60px;
     background:#17212b;
     display:flex;
-    flex-direction:column;
-    justify-content:center;
+    align-items:center;
     padding:0 15px;
+    font-weight:bold;
 }
 
-.title { font-weight:bold; }
-.status { font-size:12px; color:#7aa2c0; }
+.status {
+    font-size:12px;
+    color:#7aa2c0;
+    margin-left:10px;
+    font-weight:normal;
+}
 
 .messages {
     flex:1;
     padding:15px;
-    padding-bottom:90px;
     overflow-y:auto;
     display:flex;
     flex-direction:column;
@@ -100,12 +103,12 @@ html, body {
     background:#2b5278;
     padding:9px 12px;
     border-radius:14px;
-    max-width:75%;
+    max-width:80%;
     font-size:14px;
     margin-top:8px;
     opacity:0;
     transform:translateY(8px);
-    transition:0.35s;
+    transition:0.3s;
 }
 
 .msg.show {
@@ -152,16 +155,13 @@ html, body {
 
 .heart {
     font-size:90px;
-    opacity:0;
-    transform:scale(0.6);
-    transition:1s;
     animation:pulse 1.2s infinite;
 }
 
 @keyframes pulse {
-    0% { transform:scale(1); }
-    50% { transform:scale(1.15); }
-    100% { transform:scale(1); }
+    0%{transform:scale(1);}
+    50%{transform:scale(1.15);}
+    100%{transform:scale(1);}
 }
 
 .text {
@@ -192,9 +192,10 @@ html, body {
 <!-- 💬 -->
 <div class="chat" id="chat">
     <div class="topbar">
-        <div class="title">Darling❤️</div>
-        <div class="status" id="status">в сети</div>
+        Darling❤️
+        <span class="status" id="status">в сети</span>
     </div>
+
     <div class="messages" id="messages"></div>
 </div>
 
@@ -213,17 +214,13 @@ html, body {
 
 <script>
 
+/* ===================== */
+/* 💖 ИГРА */
+/* ===================== */
+
 let score = 0;
 let locked = false;
 
-const game = document.getElementById("game");
-const notify = document.getElementById("notify");
-const chat = document.getElementById("chat");
-const messages = document.getElementById("messages");
-const status = document.getElementById("status");
-const nextBtn = document.getElementById("nextBtn");
-
-/* 💖 ИГРА (100% РАБОТАЕТ) */
 function spawn() {
     if (locked) return;
 
@@ -231,15 +228,15 @@ function spawn() {
     el.className = "drop";
     el.innerText = "💖";
 
-    const x = Math.random() * (window.innerWidth - 40);
-    let y = -40;
+    let x = Math.random() * (window.innerWidth - 50);
+    let y = -50;
 
     el.style.left = x + "px";
     el.style.top = y + "px";
 
-    game.appendChild(el);
+    document.getElementById("game").appendChild(el);
 
-    const speed = 2 + Math.random() * 2;
+    const speed = 0.8 + Math.random() * 1.2; // медленно
 
     function move() {
         if (locked) {
@@ -270,85 +267,104 @@ function spawn() {
     el.addEventListener("touchstart", hit);
 }
 
-setInterval(spawn, 450);
+setInterval(spawn, 650);
 
 /* 📩 */
-setTimeout(() => notify.classList.add("show"), 8000);
+setTimeout(() => {
+    document.getElementById("notify").classList.add("show");
+}, 8000);
 
 /* 💥 старт */
-notify.onclick = () => {
-    locked = true;
+document.getElementById("notify").onclick = () => {
 
-    game.style.display = "none";
-    document.querySelector(".game-text").style.display = "none";
-    document.querySelector(".score").style.display = "none";
-    notify.style.display = "none";
+locked = true;
 
-    chat.style.display = "flex";
+document.getElementById("game").style.display = "none";
+document.querySelector(".game-text").style.display = "none";
+document.querySelector(".score").style.display = "none";
+document.getElementById("notify").style.display = "none";
 
-    startChat();
+document.getElementById("chat").style.display = "flex";
+
+startChat();
 };
 
-/* 💬 ПОЛНОЕ ПОЗДРАВЛЕНИЕ */
+/* 💬 ПОЛНЫЙ ТЕКСТ */
 const msgs = [
-"Лерочка.. 💙",
+"Лерочка…",
 "Слушай… сегодня твой день ✨",
-"Я не буду пытаться сказать что-то идеальное",
-"Я просто рад, что ты есть в моей жизни 🥰",
-"Ты очень особенная 💖",
-"И я хочу, чтобы ты была счастлива ❤️",
-"Сегодня и всегда 💙"
+"Я не буду пытаться сказать что-то слишком идеальное — это, наверное, и не нужно 💫",
+"Я просто рад, что ты есть в моей жизни… правда 🥰",
+"Ты очень особенная для меня, даже если я не всегда умею это красиво показать 💖",
+"И я хочу, чтобы у тебя было больше спокойных дней —",
+"таких, где тебе просто хорошо, где ты улыбаешься без причины 💕",
+"Чтобы ты никогда не сомневалась в себе 🌸",
+"Ты правда намного лучше, чем иногда думаешь ✨",
+"И… если совсем честно —",
+"я просто хочу, чтобы ты была счастлива. По-настоящему ❤️",
+"Сегодня… и всегда",
+"С днём рождения тебя 🎂",
+"И несмотря ни на что — знай, я рядом ❤️"
 ];
 
 let i = 0;
 
 function startChat() {
-    function next() {
-        if (i >= msgs.length) {
-            nextBtn.style.display = "block";
-            return;
-        }
 
-        status.innerText = "печатает…";
+function next() {
 
-        setTimeout(() => {
-            status.innerText = "в сети";
-
-            const d = document.createElement("div");
-            d.className = "msg";
-            d.innerText = msgs[i];
-
-            messages.appendChild(d);
-            setTimeout(() => d.classList.add("show"), 50);
-
-            messages.scrollTop = messages.scrollHeight;
-
-            i++;
-            setTimeout(next, 900);
-
-        }, 1200);
-    }
-
-    next();
+if (i >= msgs.length) {
+    document.getElementById("nextBtn").style.display = "block";
+    return;
 }
 
-/* 🔘 далее */
-nextBtn.onclick = () => {
-    nextBtn.style.display = "none";
+document.getElementById("status").innerText = "печатает…";
 
-    document.getElementById("fade").classList.add("show");
+setTimeout(() => {
 
-    setTimeout(() => {
-        document.getElementById("final").style.display = "flex";
-    }, 1500);
+document.getElementById("status").innerText = "в сети";
 
-    setTimeout(() => {
-        document.getElementById("top").classList.add("show");
-    }, 2200);
+const d = document.createElement("div");
+d.className = "msg";
+d.innerText = msgs[i];
 
-    setTimeout(() => {
-        document.getElementById("bottom").classList.add("show");
-    }, 3000);
+document.getElementById("messages").appendChild(d);
+
+setTimeout(() => d.classList.add("show"), 50);
+
+document.getElementById("messages").scrollTop =
+document.getElementById("messages").scrollHeight;
+
+i++;
+
+setTimeout(next, 900);
+
+}, 1200);
+
+}
+
+next();
+}
+
+/* 🔘 финал */
+document.getElementById("nextBtn").onclick = () => {
+
+document.getElementById("nextBtn").style.display = "none";
+
+document.getElementById("fade").classList.add("show");
+
+setTimeout(() => {
+document.getElementById("final").style.display = "flex";
+}, 1500);
+
+setTimeout(() => {
+document.getElementById("top").classList.add("show");
+}, 2200);
+
+setTimeout(() => {
+document.getElementById("bottom").classList.add("show");
+}, 3000);
+
 };
 
 </script>
