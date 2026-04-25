@@ -16,38 +16,18 @@ overflow:hidden;
 color:white;
 }
 
-/* 🌸 поле */
-.game{
+/* ⏳ пустой старт */
+.start-screen{
 position:fixed;
 inset:0;
 display:flex;
-flex-wrap:wrap;
-align-content:flex-start;
-padding:20px;
-gap:10px;
-}
-
-.item{
-width:60px;
-height:60px;
-display:flex;
 justify-content:center;
 align-items:center;
-font-size:32px;
-border-radius:12px;
-background:rgba(255,255,255,0.05);
-cursor:pointer;
-user-select:none;
+color:#7aa2c0;
+font-size:14px;
 }
 
-/* 📊 */
-.score{
-position:fixed;
-top:15px;
-left:15px;
-}
-
-/* 📩 */
+/* 📩 уведомление */
 .notify{
 position:fixed;
 top:-120px;
@@ -60,6 +40,7 @@ background:#1f1f1f;
 border-radius:12px;
 padding:12px;
 transition:0.5s;
+z-index:10;
 }
 
 .notify.show{ top:10px; }
@@ -112,14 +93,73 @@ opacity:1;
 transform:translateY(0);
 }
 
+/* 🔘 кнопка */
+.next-btn{
+display:none;
+position:fixed;
+bottom:20px;
+left:50%;
+transform:translateX(-50%);
+background:#2b5278;
+padding:10px 18px;
+border-radius:20px;
+cursor:pointer;
+}
+
+/* 🌙 */
+.fade{
+position:fixed;
+inset:0;
+background:black;
+opacity:0;
+transition:1.5s;
+z-index:50;
+}
+
+/* ❤️ финал */
+.final{
+position:fixed;
+inset:0;
+display:none;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+background:black;
+z-index:60;
+}
+
+.heart{
+font-size:90px;
+animation:pulse 1.2s infinite;
+}
+
+@keyframes pulse{
+0%{transform:scale(1);}
+50%{transform:scale(1.15);}
+100%{transform:scale(1);}
+}
+
+.text{
+position:absolute;
+font-size:22px;
+opacity:0;
+transition:1s;
+}
+
+.top{ top:25%; }
+.bottom{ bottom:25%; }
+
+.show{ opacity:1; }
+
 </style>
 </head>
 
 <body>
 
-<!-- 🌸 игра -->
-<div class="score">Найдено 💖: <span id="score">0</span></div>
-<div class="game" id="game"></div>
+<!-- ⏳ интро -->
+<div class="start-screen" id="start">
+ожидание сообщения…
+</div>
 
 <!-- 📩 -->
 <div class="notify" id="notify">Telegram — новое сообщение 💌</div>
@@ -134,88 +174,62 @@ transform:translateY(0);
   <div class="messages" id="messages"></div>
 </div>
 
+<!-- 🔘 -->
+<div class="next-btn" id="nextBtn">Далее</div>
+
+<!-- 🌙 -->
+<div class="fade" id="fade"></div>
+
+<!-- ❤️ -->
+<div class="final" id="final">
+  <div class="text top" id="top">С днём рождения</div>
+  <div class="heart">❤️</div>
+  <div class="text bottom" id="bottom">Любимая</div>
+</div>
+
 <script>
 
-let score = 0;
-let found = 0;
+/* ⏳ задержка интриги */
+setTimeout(()=>{
+document.getElementById("start").style.display="none";
+document.getElementById("notify").classList.add("show");
+},10000);
 
-const game = document.getElementById("game");
+/* 📩 */
 const notify = document.getElementById("notify");
 const chat = document.getElementById("chat");
 const messages = document.getElementById("messages");
 const status = document.getElementById("status");
+const nextBtn = document.getElementById("nextBtn");
 
-/* 🌸 генерация поля */
-function generate(){
-
-game.innerHTML = "";
-
-for(let i=0;i<18;i++){
-
-const el = document.createElement("div");
-el.className = "item";
-
-/* 1 случайное сердечко */
-if(i === Math.floor(Math.random()*18)){
-el.innerText = "💖";
-el.onclick = () => {
-score++;
-document.getElementById("score").innerText = score;
-
-found++;
-
-if(found >= 3){
-startChat();
-}else{
-generate();
-}
-};
-} else {
-el.innerText = "🌸";
-el.onclick = () => {
-el.style.opacity = "0.3";
-};
-}
-
-game.appendChild(el);
-}
-
-}
-
-generate();
-
-/* 📩 */
-setTimeout(()=>{
-notify.classList.add("show");
-},1500);
-
+/* старт */
 notify.onclick = () => {
 notify.style.display = "none";
+chat.style.display = "flex";
+startChat();
 };
 
-/* 💬 чат */
+/* 💬 текст */
 const msgs = [
 "Лерочка…",
 "Слушай… сегодня твой день ✨",
-"Я просто рад, что ты есть 🥰",
-"Ты очень особенная 💖",
+"Я не буду пытаться сказать что-то слишком идеальное — это, наверное, и не нужно 💫",
+"Я просто рад, что ты есть в моей жизни… правда 🥰",
+"Ты очень особенная для меня 💖",
 "И я хочу, чтобы ты была счастлива ❤️",
 "Сегодня… и всегда",
 "С днём рождения тебя 🎂",
-"И знай — я рядом ❤️"
+"И несмотря ни на что — знай, я рядом ❤️"
 ];
 
 let i = 0;
 
 function startChat(){
 
-game.style.display = "none";
-chat.style.display = "flex";
-
 function next(){
 
 if(i >= msgs.length){
-status.innerText = "в сети";
+nextBtn.style.display = "block";
 return;
 }
 
@@ -238,12 +252,31 @@ i++;
 
 setTimeout(next,900);
 
-},1000);
+},1200);
 
 }
 
 next();
 }
+
+/* 🔘 финал */
+nextBtn.onclick = () => {
+
+document.getElementById("fade").classList.add("show");
+
+setTimeout(()=>{
+document.getElementById("final").style.display = "flex";
+},1500);
+
+setTimeout(()=>{
+document.getElementById("top").classList.add("show");
+},2200);
+
+setTimeout(()=>{
+document.getElementById("bottom").classList.add("show");
+},3000);
+
+};
 
 </script>
 
