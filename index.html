@@ -40,10 +40,8 @@ html, body {
     display:none;
     flex-direction:column;
     height:100vh;
-    position:relative;
 }
 
-/* верх */
 .topbar {
     height:64px;
     background:#17212b;
@@ -66,7 +64,7 @@ html, body {
 /* 💬 сообщения */
 .messages {
     flex:1;
-    padding:18px 14px 110px 14px; /* 💥 ГЛАВНЫЙ ФИКС (нижний запас) */
+    padding:18px 14px 110px 14px;
     overflow-y:auto;
     -webkit-overflow-scrolling: touch;
 
@@ -100,7 +98,7 @@ html, body {
     transform:translateY(0);
 }
 
-/* кнопка */
+/* 🔘 */
 .next-btn {
     display:none;
     position:fixed;
@@ -115,7 +113,7 @@ html, body {
     z-index:10;
 }
 
-/* финал */
+/* ❤️ финал */
 .final {
     position:fixed;
     inset:0;
@@ -184,18 +182,19 @@ const nextBtn = document.getElementById("nextBtn");
 
 let i = 0;
 
-/* 💬 текст */
+/* 💬 ПОЗДРАВЛЕНИЕ */
 const msgs = [
 "Лерочка…",
 "Слушай… сегодня твой день ✨",
-"Я не буду пытаться сказать что-то слишком идеальное — это, наверное, и не нужно",
-"Я просто рад, что ты есть в моей жизни… правда",
-"С тобой у меня много спокойствия и тепла внутри",
-"Ты очень особенная для меня",
+"Я не буду говорить что-то идеальное, это и не нужно 🙂",
+"Я просто рад, что ты есть в моей жизни",
+"С тобой у меня много тепла и спокойствия",
+"Ты очень особенная для меня 💛",
 "И я правда ценю тебя",
-"Я хочу, чтобы у тебя всё было хорошо",
+"Хочу, чтобы у тебя всё было хорошо",
+"Чтобы ты чаще улыбалась 🙂",
 "Ты намного сильнее, чем думаешь",
-"И мне важно, чтобы ты улыбалась",
+"И мне важно, чтобы ты была счастлива",
 "Сегодня. И всегда",
 "С днём рождения тебя 🎂",
 "И что бы не случилось, знай — я рядом ❤️"
@@ -232,7 +231,6 @@ d.innerText = msgs[i];
 messages.appendChild(d);
 setTimeout(()=>d.classList.add("show"),50);
 
-/* 💥 ФИКС: всегда доскролл вниз */
 messages.scrollTop = messages.scrollHeight;
 
 i++;
@@ -245,7 +243,6 @@ setTimeout(next,1200);
 next();
 }
 
-/* финал */
 nextBtn.onclick = () => {
 
 document.getElementById("final").style.display="flex";
