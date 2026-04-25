@@ -168,10 +168,8 @@ html, body {
 
 <body>
 
-<!-- 📩 -->
 <div class="notify" id="notify">Telegram — новое сообщение 💌</div>
 
-<!-- 💬 -->
 <div class="chat" id="chat">
     <div class="topbar">
         <div class="title">Darling❤️</div>
@@ -181,10 +179,8 @@ html, body {
     <div class="messages" id="messages"></div>
 </div>
 
-<!-- 🔘 -->
 <div class="next-btn" id="nextBtn">Далее</div>
 
-<!-- ❤️ -->
 <div class="final" id="final">
     <div class="text top" id="top">С днём рождения</div>
     <div class="heart">❤️</div>
@@ -201,7 +197,6 @@ const nextBtn = document.getElementById("nextBtn");
 
 let i = 0;
 
-/* 💬 текст */
 const msgs = [
 "Лерочка…",
 "Слушай… сегодня твой день ✨",
@@ -218,7 +213,6 @@ const msgs = [
 "И что бы не случилось, знай — я рядом ❤️"
 ];
 
-/* 📩 старт */
 setTimeout(()=>notify.classList.add("show"),1500);
 
 notify.onclick = () => {
@@ -227,7 +221,6 @@ chat.style.display="flex";
 startChat();
 };
 
-/* 💬 чат */
 function startChat(){
 
 function next(){
@@ -250,7 +243,13 @@ d.innerText = msgs[i];
 messages.appendChild(d);
 setTimeout(()=>d.classList.add("show"),50);
 
-messages.scrollTop = messages.scrollHeight;
+/* 💥 ФИКС СКРОЛЛА (ОКОНЧАТЕЛЬНЫЙ) */
+setTimeout(() => {
+    messages.scrollTo({
+        top: messages.scrollHeight,
+        behavior: "smooth"
+    });
+}, 80);
 
 i++;
 setTimeout(next,1200);
@@ -262,7 +261,6 @@ setTimeout(next,1200);
 next();
 }
 
-/* 🔘 финал */
 nextBtn.onclick = () => {
 
 document.getElementById("final").style.display="flex";
@@ -271,23 +269,6 @@ setTimeout(()=>document.getElementById("top").classList.add("show"),800);
 setTimeout(()=>document.getElementById("bottom").classList.add("show"),1600);
 
 };
-
-/* 💖 сердечки фон */
-function createHearts(){
-const h = document.createElement("div");
-h.className = "bg-heart";
-h.innerText = "❤️";
-
-h.style.left = Math.random()*100 + "vw";
-h.style.animationDuration = (5+Math.random()*5) + "s";
-h.style.fontSize = (14+Math.random()*10) + "px";
-
-document.body.appendChild(h);
-
-setTimeout(()=>h.remove(),10000);
-}
-
-setInterval(createHearts,350);
 
 </script>
 
