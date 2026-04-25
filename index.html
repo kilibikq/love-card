@@ -16,11 +16,16 @@ html, body {
     color:white;
 }
 
-/* 🎮 */
+/* 🎮 ИГРА */
 .game {
     position:fixed;
     inset:0;
-    z-index:1;
+    display:flex;
+    flex-wrap:wrap;
+    align-content:center;
+    justify-content:center;
+    gap:15px;
+    padding:20px;
 }
 
 .game-text {
@@ -29,6 +34,7 @@ html, body {
     left:50%;
     transform:translate(-50%,-50%);
     color:#7aa2c0;
+    font-size:14px;
 }
 
 .score {
@@ -38,18 +44,18 @@ html, body {
     z-index:5;
 }
 
-/* 💖 */
-.drop {
-    position:absolute;
+/* 🎁 коробки */
+.box {
+    width:70px;
+    height:70px;
+    background:#2b5278;
+    border-radius:12px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
     font-size:30px;
     cursor:pointer;
-    z-index:10;
-    animation:fall linear forwards;
-}
-
-@keyframes fall {
-    from { transform:translateY(-50px); }
-    to { transform:translateY(110vh); }
+    user-select:none;
 }
 
 /* 📩 */
@@ -70,7 +76,7 @@ html, body {
 
 .notify.show { top:10px; }
 
-/* 💬 */
+/* 💬 ЧАТ */
 .chat {
     display:none;
     flex-direction:column;
@@ -139,7 +145,7 @@ html, body {
     z-index:50;
 }
 
-/* ❤️ */
+/* ❤️ ФИНАЛ */
 .final {
     position:fixed;
     inset:0;
@@ -153,9 +159,6 @@ html, body {
 
 .heart {
     font-size:90px;
-    opacity:0;
-    transform:scale(0.6);
-    transition:1s;
     animation:pulse 1.2s infinite;
 }
 
@@ -182,12 +185,15 @@ html, body {
 
 <body>
 
-<div class="score">💖: <span id="score">0</span></div>
+<!-- 🎮 -->
+<div class="score">Найдено ❤️: <span id="score">0</span></div>
 <div class="game" id="game"></div>
-<div class="game-text">нажимай на сердечки 💖</div>
+<div class="game-text">найди сердечко в подарках 🎁</div>
 
+<!-- 📩 -->
 <div class="notify" id="notify">Telegram — новое сообщение 💌</div>
 
+<!-- 💬 -->
 <div class="chat" id="chat">
     <div class="topbar">
         <div class="title">Darling❤️</div>
@@ -196,76 +202,75 @@ html, body {
     <div class="messages" id="messages"></div>
 </div>
 
+<!-- 🔘 -->
 <div class="next-btn" id="nextBtn">Далее</div>
 
+<!-- 🌙 -->
 <div class="fade" id="fade"></div>
 
+<!-- ❤️ -->
 <div class="final" id="final">
     <div class="text top" id="top">С днём рождения</div>
-    <div class="heart" id="heart">❤️</div>
+    <div class="heart">❤️</div>
     <div class="text bottom" id="bottom">Любимая</div>
 </div>
 
 <script>
 
-let locked=false;
-let score=0;
+let score = 0;
+let found = false;
 
-const game=document.getElementById("game");
-const notify=document.getElementById("notify");
-const chat=document.getElementById("chat");
-const messages=document.getElementById("messages");
-const status=document.getElementById("status");
-const nextBtn=document.getElementById("nextBtn");
+const game = document.getElementById("game");
+const notify = document.getElementById("notify");
+const chat = document.getElementById("chat");
+const messages = document.getElementById("messages");
+const status = document.getElementById("status");
+const nextBtn = document.getElementById("nextBtn");
 
-/* 🎮 */
-function spawn(){
-if(locked) return;
+/* 🎁 ИГРА */
+function generateBoxes(){
 
-const el=document.createElement("div");
-el.className="drop";
-el.innerText="💖";
+game.innerHTML = "";
+found = false;
 
-el.style.left=Math.random()*100+"vw";
-el.style.animationDuration=(3+Math.random()*2)+"s";
+const heartIndex = Math.floor(Math.random() * 9);
 
-let clicked=false;
+for(let i=0;i<9;i++){
 
-const hit=(e)=>{
-e.preventDefault();
-e.stopPropagation();
+const box = document.createElement("div");
+box.className = "box";
+box.innerText = "🎁";
 
-if(clicked || locked) return;
-clicked=true;
+box.onclick = () => {
 
+if(found) return;
+
+if(i === heartIndex){
+box.innerText = "❤️";
 score++;
-document.getElementById("score").innerText=score;
+document.getElementById("score").innerText = score;
 
-el.remove();
+found = true;
+
+setTimeout(generateBoxes, 700);
+
+} else {
+box.style.opacity = "0.3";
+}
 };
 
-el.addEventListener("pointerdown", hit);
-
-game.appendChild(el);
-
-setTimeout(()=>{
-if(el && !clicked){
-el.style.opacity="0";
-el.style.transition="0.3s";
-setTimeout(()=>el.remove(),300);
-}
-},6500);
+game.appendChild(box);
 }
 
-setInterval(spawn,600);
+}
+
+generateBoxes();
 
 /* 📩 */
 setTimeout(()=>notify.classList.add("show"),8000);
 
 /* 💥 старт */
-notify.onclick=()=>{
-if(locked) return;
-locked=true;
+notify.onclick = () => {
 
 game.style.display="none";
 document.querySelector(".game-text").style.display="none";
@@ -277,7 +282,7 @@ chat.style.display="flex";
 startChat();
 };
 
-/* 💬 ОБНОВЛЁННЫЙ ТЕКСТ */
+/* 💬 */
 let i=0;
 
 const msgs=[
@@ -285,14 +290,13 @@ const msgs=[
 "Слушай… сегодня твой день ✨",
 "Я не буду пытаться сказать что-то идеальное — да и, честно, это сейчас не главное",
 "Я просто рад, что ты есть в моей жизни… правда 🥰",
-"Ты для меня очень особенная. Даже если я не всегда умею это нормально показать.",
+"Ты для меня очень особенная.",
 "И знаешь… я правда хочу, чтобы у тебя было больше спокойных дней.",
-"Таких, где тебе легко, где ты просто улыбаешься ни с чего 💕",
-"И чтобы ты меньше сомневалась в себе — ты намного лучше, чем иногда думаешь 🌸",
-"И если совсем честно… я просто хочу, чтобы ты была счастлива. По-настоящему.",
+"Ты намного лучше, чем иногда думаешь 🌸",
+"И если честно… я просто хочу, чтобы ты была счастлива.",
 "Сегодня. И всегда.",
 "С днём рождения тебя 🎂",
-"И несмотря ни на что — знай, я рядом ❤️"
+"И знай — я рядом ❤️"
 ];
 
 function startChat(){
