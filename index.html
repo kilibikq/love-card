@@ -16,20 +16,6 @@ html, body {
     color:white;
 }
 
-/* 💖 фоновые сердечки */
-.bg-heart {
-    position:fixed;
-    font-size:18px;
-    opacity:0.15;
-    animation:floatUp linear infinite;
-    pointer-events:none;
-}
-
-@keyframes floatUp {
-    from { transform:translateY(100vh); }
-    to { transform:translateY(-10vh); }
-}
-
 /* 📩 уведомление */
 .notify {
     position:fixed;
@@ -54,8 +40,6 @@ html, body {
     display:none;
     flex-direction:column;
     height:100vh;
-    position:relative;
-    z-index:2;
 }
 
 .topbar {
@@ -78,16 +62,22 @@ html, body {
     flex-direction:column;
 }
 
+/* 💬 сообщения (УЛУЧШЕНО) */
 .msg {
     background:#2b5278;
-    padding:8px 12px;
+    padding:10px 12px;
     border-radius:14px;
-    max-width:75%;
+
     font-size:14px;
     margin-top:8px;
+
     opacity:0;
     transform:translateY(8px);
     transition:0.3s;
+
+    width:fit-content;      /* 💥 под текст */
+    max-width:80%;
+    word-wrap:break-word;
 }
 
 .msg.show {
@@ -180,21 +170,22 @@ const nextBtn = document.getElementById("nextBtn");
 
 let i = 0;
 
-/* 💬 текст */
+/* 💬 ТЕКСТ */
 const msgs = [
 "Лерочка…",
 "Слушай… сегодня твой день ✨",
 "Я не буду пытаться сказать что-то слишком идеальное — это, наверное, и не нужно",
 "Я просто рад, что ты есть в моей жизни… правда",
 "С тобой у меня много спокойствия и тепла внутри",
-"Ты очень особенная для меня",
-"И я правда ценю тебя",
-"Я хочу, чтобы у тебя всё было хорошо",
-"Ты намного сильнее, чем думаешь",
-"И мне важно, чтобы ты улыбалась",
+"Ты очень особенная для меня, даже если я не всегда умею это нормально показать",
+"И я правда ценю каждое твоё появление в моей жизни",
+"Я хочу, чтобы у тебя было больше дней, где тебе легко, спокойно и хорошо",
+"Чтобы ты чаще улыбалась просто так",
+"Ты намного сильнее и лучше, чем иногда сама о себе думаешь",
+"И если честно… мне просто важно, чтобы ты была счастлива",
 "Сегодня. И всегда",
 "С днём рождения тебя 🎂",
-"И знай — я рядом ❤️"
+"И что бы не случилось, знай — я рядом ❤️"
 ];
 
 /* 📩 старт */
@@ -232,9 +223,11 @@ setTimeout(()=>d.classList.add("show"),50);
 messages.scrollTop = messages.scrollHeight;
 
 i++;
-setTimeout(next,900);
 
-},800);
+/* ⌨️ СРЕДНЯЯ СКОРОСТЬ */
+setTimeout(next, 1200);
+
+},900);
 
 }
 
@@ -250,23 +243,6 @@ setTimeout(()=>document.getElementById("top").classList.add("show"),800);
 setTimeout(()=>document.getElementById("bottom").classList.add("show"),1600);
 
 };
-
-/* 💖 фоновые сердечки */
-function createHearts(){
-const h = document.createElement("div");
-h.className = "bg-heart";
-h.innerText = "❤️";
-
-h.style.left = Math.random()*100 + "vw";
-h.style.animationDuration = (5+Math.random()*5) + "s";
-h.style.fontSize = (12+Math.random()*10) + "px";
-
-document.body.appendChild(h);
-
-setTimeout(()=>h.remove(),10000);
-}
-
-setInterval(createHearts,400);
 
 </script>
 
