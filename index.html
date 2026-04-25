@@ -26,22 +26,7 @@ html, body {
     justify-content:center;
     gap:15px;
     padding:20px;
-}
-
-.game-text {
-    position:fixed;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    color:#7aa2c0;
-    font-size:14px;
-}
-
-.score {
-    position:fixed;
-    top:15px;
-    left:15px;
-    z-index:5;
+    z-index:1;
 }
 
 /* 🎁 коробки */
@@ -58,7 +43,27 @@ html, body {
     user-select:none;
 }
 
-/* 📩 */
+/* 📝 инструкция ВНИЗУ */
+.game-text-bottom{
+position:fixed;
+bottom:25px;
+left:50%;
+transform:translateX(-50%);
+color:#7aa2c0;
+font-size:14px;
+text-align:center;
+z-index:2;
+}
+
+/* 📊 счёт */
+.score {
+    position:fixed;
+    top:15px;
+    left:15px;
+    z-index:5;
+}
+
+/* 📩 уведомление */
 .notify {
     position:fixed;
     top:-100px;
@@ -145,7 +150,7 @@ html, body {
     z-index:50;
 }
 
-/* ❤️ ФИНАЛ */
+/* ❤️ финал */
 .final {
     position:fixed;
     inset:0;
@@ -188,7 +193,9 @@ html, body {
 <!-- 🎮 -->
 <div class="score">Найдено ❤️: <span id="score">0</span></div>
 <div class="game" id="game"></div>
-<div class="game-text">найди сердечко в подарках 🎁</div>
+
+<!-- 📝 вниз -->
+<div class="game-text-bottom">найди сердечко в подарках 🎁</div>
 
 <!-- 📩 -->
 <div class="notify" id="notify">Telegram — новое сообщение 💌</div>
@@ -227,7 +234,7 @@ const messages = document.getElementById("messages");
 const status = document.getElementById("status");
 const nextBtn = document.getElementById("nextBtn");
 
-/* 🎁 ИГРА */
+/* 🎁 ИГРА (ПОЧИНЕНА) */
 function generateBoxes(){
 
 game.innerHTML = "";
@@ -241,11 +248,16 @@ const box = document.createElement("div");
 box.className = "box";
 box.innerText = "🎁";
 
+/* 💥 ВАЖНО: фикс клика */
+box.dataset.index = i;
+
 box.onclick = () => {
 
 if(found) return;
 
-if(i === heartIndex){
+const idx = Number(box.dataset.index);
+
+if(idx === heartIndex){
 box.innerText = "❤️";
 score++;
 document.getElementById("score").innerText = score;
@@ -273,7 +285,7 @@ setTimeout(()=>notify.classList.add("show"),8000);
 notify.onclick = () => {
 
 game.style.display="none";
-document.querySelector(".game-text").style.display="none";
+document.querySelector(".game-text-bottom").style.display="none";
 document.querySelector(".score").style.display="none";
 notify.style.display="none";
 
