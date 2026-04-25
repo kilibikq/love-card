@@ -26,10 +26,9 @@ html, body {
     justify-content:center;
     gap:15px;
     padding:20px;
-    z-index:1;
 }
 
-/* 🎁 коробки */
+/* 🎁 */
 .box {
     width:70px;
     height:70px;
@@ -41,9 +40,10 @@ html, body {
     font-size:30px;
     cursor:pointer;
     user-select:none;
+    touch-action: manipulation; /* 💥 ВАЖНО */
 }
 
-/* 📝 инструкция ВНИЗУ */
+/* 📝 текст */
 .game-text-bottom{
 position:fixed;
 bottom:25px;
@@ -52,10 +52,9 @@ transform:translateX(-50%);
 color:#7aa2c0;
 font-size:14px;
 text-align:center;
-z-index:2;
 }
 
-/* 📊 счёт */
+/* 📊 */
 .score {
     position:fixed;
     top:15px;
@@ -63,7 +62,7 @@ z-index:2;
     z-index:5;
 }
 
-/* 📩 уведомление */
+/* 📩 */
 .notify {
     position:fixed;
     top:-100px;
@@ -81,7 +80,7 @@ z-index:2;
 
 .notify.show { top:10px; }
 
-/* 💬 ЧАТ */
+/* 💬 */
 .chat {
     display:none;
     flex-direction:column;
@@ -137,7 +136,6 @@ z-index:2;
     border-radius:20px;
     font-size:14px;
     cursor:pointer;
-    z-index:1000;
 }
 
 /* 🌙 */
@@ -150,7 +148,7 @@ z-index:2;
     z-index:50;
 }
 
-/* ❤️ финал */
+/* ❤️ */
 .final {
     position:fixed;
     inset:0;
@@ -194,7 +192,6 @@ z-index:2;
 <div class="score">Найдено ❤️: <span id="score">0</span></div>
 <div class="game" id="game"></div>
 
-<!-- 📝 вниз -->
 <div class="game-text-bottom">найди сердечко в подарках 🎁</div>
 
 <!-- 📩 -->
@@ -234,7 +231,7 @@ const messages = document.getElementById("messages");
 const status = document.getElementById("status");
 const nextBtn = document.getElementById("nextBtn");
 
-/* 🎁 ИГРА (ПОЧИНЕНА) */
+/* 🎁 СТАБИЛЬНАЯ ИГРА */
 function generateBoxes(){
 
 game.innerHTML = "";
@@ -248,16 +245,13 @@ const box = document.createElement("div");
 box.className = "box";
 box.innerText = "🎁";
 
-/* 💥 ВАЖНО: фикс клика */
-box.dataset.index = i;
-
-box.onclick = () => {
+const handler = (e) => {
+e.preventDefault();
+e.stopPropagation();
 
 if(found) return;
 
-const idx = Number(box.dataset.index);
-
-if(idx === heartIndex){
+if(i === heartIndex){
 box.innerText = "❤️";
 score++;
 document.getElementById("score").innerText = score;
@@ -270,6 +264,8 @@ setTimeout(generateBoxes, 700);
 box.style.opacity = "0.3";
 }
 };
+
+box.addEventListener("pointerdown", handler, { passive:false });
 
 game.appendChild(box);
 }
